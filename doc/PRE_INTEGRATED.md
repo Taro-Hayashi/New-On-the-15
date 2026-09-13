@@ -50,7 +50,7 @@
 
 ## 2. 内容品
 
-![](./img/IMG_7823.jpg)
+![](./img/IMG_7963.jpg)
 
 <table>
     <tr><td>本体</td><td>1</td></tr>
