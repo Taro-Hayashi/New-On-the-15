@@ -45,6 +45,8 @@
 | 治具プリント品データ       | CC0 1.0   | 準備中                                      |
 | ZMKファームウェア       | MIT       | [zmk_firmware/LICENSE](zmk_firmware/LICENSE) |
 | RMKファームウェア       | MIT       | [rmk_firmware/LICENSE](rmk_firmware/LICENSE) |
+
+
 2Uスタビライザーはkoktohさんのフットプリントを使用しました。
 https://github.com/koktoh/BrownSugar_KBD_KiCad_Library
 電池の回路はcormoranさんのdya-dashの回路図を参照しました。
