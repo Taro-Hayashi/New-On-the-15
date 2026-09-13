@@ -104,6 +104,7 @@ LRボタンは大きくて押しやすいボタンに変更することが可能
 | --- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | x7  | [`onthe15-split-left-x7-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-left-x7-zmk.uf2) | [`onthe15-split-right-x7-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-right-x7-zmk.uf2) |
 | x8  | [`onthe15-split-left-x8-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-left-x8-zmk.uf2) | [`onthe15-split-right-x8-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-right-x8-zmk.uf2) |
+
 今回は[`onthe15-split-left-x7-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-left-x7-zmk.uf2)をx7に、[`onthe15-split-right-x8-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-right-x8-zmk.uf2)をx8にインストールします。
 
 ### 4.2 ファームウェアのインストール
