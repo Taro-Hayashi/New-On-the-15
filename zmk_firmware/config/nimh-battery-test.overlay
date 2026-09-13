@@ -1,0 +1,20 @@
+/* vbat_sense: P0.02/AIN0 through a 1 Mohm / 470 kohm divider. */
+
+&vbatt {
+    compatible = "onthe15,battery-nimh-diagnostic";
+    io-channels = <&adc 0>;
+    /delete-property/ power-gpios;
+    output-ohms = <470000>;
+    full-ohms = <1470000>;
+    series-cell-count = <2>;
+};
+
+/ {
+    behaviors {
+        bat_set: battery_settings {
+            compatible = "onthe15,behavior-battery-settings";
+            #binding-cells = <1>;
+            display-name = "Battery Settings";
+        };
+    };
+};

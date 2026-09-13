@@ -1,0 +1,27 @@
+diff --git a/src/studio/runtime_combo_handler.c b/src/studio/runtime_combo_handler.c
+index c640fe4..91f8fe1 100644
+--- a/src/studio/runtime_combo_handler.c
++++ b/src/studio/runtime_combo_handler.c
+@@ -125,11 +125,18 @@ static int handle_list_combos(cormoran_runtime_combo_Response *resp) {
+ 
+     for (uint32_t i = 0; i < count; i++) {
+         int ret = fill_combo_message(i, &result.combos[result.combos_count]);
+-        if (ret == -ENOENT) {
+-            continue;
+-        }
+         if (ret < 0) {
+-            return ret;
++            /* One unreadable slot must not take the whole listing down with
++             * it. Besides -ENOENT (a slot that was never written), a slot can
++             * hold a body whose stored behavior local ID does not resolve in
++             * the running firmware, which zmk_runtime_combo_read() reports as
++             * -ENODEV - e.g. a combo bound to a behavior that only a
++             * previously flashed image provided. Returning the error here
++             * left the Web UI with an empty list and no way to reach, edit or
++             * delete any slot, including the healthy ones, so the stale slot
++             * could never be cleared from the UI. */
++            LOG_WRN("Runtime combo slot %u is not listable (%d) - skipping", i, ret);
++            continue;
+         }
+         result.combos_count++;
+     }

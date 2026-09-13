@@ -1,0 +1,40 @@
+/* x8 right/peripheral: 6 underglow LEDs followed by 32 backlight LEDs. */
+
+#include "split-leds-common.overlay"
+#include "nimh-battery-test.overlay"
+
+&led_strip {
+    chain-length = <38>;
+};
+
+&vbatt {
+    series-cell-count = <1>;
+};
+
+&rgb_ug {
+    matrix-columns = <8>;
+    matrix-rows = <4>;
+    /*
+     * config/split-left-x8-leds.overlay with 1150 added to every x. The right
+     * half of every Studio layout in config/studio/on_the_15_split.overlay
+     * starts at that offset - wide enough to clear an x8 left half - and the
+     * offset is fixed, so this table is the same whichever model the other
+     * half is. Equivalent to generating it with
+     *   tools/gen_led_positions.py --pcb kicad-private/x8_panelize/x8.kicad_pcb
+     *       --net <x8.net> --anchor SW1 --anchor-centre 1325 75
+     *
+     * The lighting module takes the nearest LED within half a key unit of the
+     * key centre, so the left half's keys - 1150 or more away - correctly own
+     * no LED on this board.
+     */
+    led-positions = <
+         1264  134  1264  225  1264  316  2086  316  2086  225   /* LED1 LED2 LED3 LED4 LED5 */
+         2086  134  2025   56  1925   56  1825   56  1725   56   /* LED6 LED14 LED13 LED12 LED11 */
+         1625   56  1525   56  1425   56  1325   56  1325  156   /* LED10 LED9 LED8 LED7 LED15 */
+         1425  156  1525  156  1625  156  1725  156  1825  156   /* LED16 LED17 LED18 LED19 LED20 */
+         1925  156  2025  156  2025  256  1925  256  1825  256   /* LED21 LED22 LED30 LED29 LED28 */
+         1725  256  1625  256  1525  256  1425  256  1325  256   /* LED27 LED26 LED25 LED24 LED23 */
+         1325  356  1425  356  1525  356  1625  356  1725  356   /* LED31 LED32 LED33 LED34 LED35 */
+         1825  356  1925  356  2025  356   /* LED36 LED37 LED38 */
+    >;
+};

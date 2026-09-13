@@ -1,0 +1,192 @@
+// Pinned copy of ../../../../proto/onthe15/studio/studio.proto for standalone web builds.
+// Source: On-the-15-v4 Phase 6.6 module schema, 2026-08-30.
+syntax = "proto3";
+
+package onthe15.studio;
+
+message GetFirmwareInfoRequest {}
+
+message GetFirmwareInfoResponse {
+    string version = 1;
+    string git_sha = 2;
+    uint32 schema_version = 3;
+}
+
+enum BatteryChemistry {
+    BATTERY_CHEMISTRY_NIMH = 0;
+    BATTERY_CHEMISTRY_ALKALINE = 1;
+}
+
+message BatterySettings {
+    BatteryChemistry chemistry = 1;
+    bool low_warning = 2;
+}
+
+message GetBatterySettingsRequest {}
+message SetBatterySettingsRequest { BatterySettings settings = 1; }
+message SaveBatterySettingsRequest {}
+message DiscardBatterySettingsRequest {}
+message ResetBatterySettingsRequest {}
+
+message BatterySettingsResponse {
+    BatterySettings settings = 1;
+    bool dirty = 2;
+}
+
+message StatusSettings {
+    bool connected_indicator = 1;
+    bool disconnected_indicator = 2;
+    // 3 and 4 were the per-layer Maintenance/Function switches, replaced by the
+    // layer-change pulse below. Do not reuse the numbers.
+    reserved 3, 4;
+    bool feedback_indicator = 5;
+    bool layer_change_indicator = 6;
+}
+message GetStatusSettingsRequest {}
+message SetStatusSettingsRequest { StatusSettings settings = 1; }
+message SaveStatusSettingsRequest {}
+message DiscardStatusSettingsRequest {}
+message ResetStatusSettingsRequest {}
+
+message StatusSettingsResponse {
+    StatusSettings settings = 1;
+    bool dirty = 2;
+}
+
+enum LightingEffect {
+    LIGHTING_EFFECT_STATIC = 0;
+    LIGHTING_EFFECT_BREATHING = 1;
+    // Value 2 was the one-dimensional reactive ripple and is now the
+    // concentric one, so stored settings keep resolving to a key ripple.
+    LIGHTING_EFFECT_RIPPLE = 2;
+    LIGHTING_EFFECT_RAINBOW = 3;
+    LIGHTING_EFFECT_RAINBOW_WAVE = 4;
+    LIGHTING_EFFECT_SWEEP = 5;
+    LIGHTING_EFFECT_CANDLE = 6;
+    LIGHTING_EFFECT_HEATMAP = 7;
+    LIGHTING_EFFECT_RAINDROPS = 8;
+}
+
+
+message LightingSettings {
+    // Backlight color. Also drives the underglow while separate_color is false,
+    // which keeps older clients that only know these two fields working.
+    uint32 hue = 1;
+    uint32 saturation = 2;
+    uint32 backlight_brightness = 3;
+    uint32 underglow_brightness = 4;
+    bool backlight_enabled = 5;
+    bool underglow_enabled = 6;
+    bool auto_off = 7;
+    LightingEffect effect = 8;
+    uint32 effect_speed = 9;
+    bool backlight_layer_color = 10;
+    bool underglow_layer_color = 11;
+    // Underglow color. Only used while separate_color is true.
+    uint32 underglow_hue = 12;
+    uint32 underglow_saturation = 13;
+    bool separate_color = 14;
+}
+message GetLightingSettingsRequest {}
+message SetLightingSettingsRequest { LightingSettings settings = 1; }
+message SaveLightingSettingsRequest {}
+message DiscardLightingSettingsRequest {}
+message ResetLightingSettingsRequest {}
+
+message LightingSettingsResponse {
+    LightingSettings settings = 1;
+    bool dirty = 2;
+}
+
+// The list never changes while the firmware runs, so it is fetched once
+// instead of riding along with every preview response.
+message GetLightingEffectsRequest {}
+// Bit N of each mask refers to LightingEffect value N. Masks rather than a
+// message per effect: the whole answer has to fit the RPC TX buffer, and a
+// repeated submessage costs an order of magnitude more room than four varints.
+message LightingEffectsResponse {
+    uint32 supported = 1;
+    uint32 uses_hue = 2;
+    uint32 uses_saturation = 3;
+    uint32 uses_speed = 4;
+}
+
+message PowerSettings {
+    uint32 idle_timeout_ms = 1;
+    uint32 deep_sleep_timeout_ms = 2;
+}
+message GetPowerSettingsRequest {}
+message SetPowerSettingsRequest { PowerSettings settings = 1; }
+message SavePowerSettingsRequest {}
+message DiscardPowerSettingsRequest {}
+message ResetPowerSettingsRequest {}
+
+message PowerSettingsResponse {
+    PowerSettings settings = 1;
+    bool dirty = 2;
+}
+
+enum PowerActivity {
+    POWER_ACTIVITY_ACTIVE = 0;
+    POWER_ACTIVITY_IDLE = 1;
+    POWER_ACTIVITY_SLEEP = 2;
+}
+
+enum SelectedTransport {
+    SELECTED_TRANSPORT_NONE = 0;
+    SELECTED_TRANSPORT_USB = 1;
+    SELECTED_TRANSPORT_BLE = 2;
+}
+
+message PowerDiagnostics {
+    uint32 uptime_ms = 1;
+    uint32 inactive_ms = 2;
+    uint32 deep_sleep_remaining_ms = 3;
+    bool usb_powered = 4;
+    PowerActivity activity = 5;
+    SelectedTransport selected_transport = 6;
+}
+message GetPowerDiagnosticsRequest {}
+
+message ErrorResponse { string message = 1; }
+
+message Request {
+    oneof request_type {
+        GetFirmwareInfoRequest get_firmware_info = 1;
+        GetBatterySettingsRequest get_battery_settings = 2;
+        SetBatterySettingsRequest set_battery_settings = 3;
+        SaveBatterySettingsRequest save_battery_settings = 4;
+        DiscardBatterySettingsRequest discard_battery_settings = 5;
+        ResetBatterySettingsRequest reset_battery_settings = 6;
+        GetStatusSettingsRequest get_status_settings = 7;
+        SetStatusSettingsRequest set_status_settings = 8;
+        SaveStatusSettingsRequest save_status_settings = 9;
+        DiscardStatusSettingsRequest discard_status_settings = 10;
+        ResetStatusSettingsRequest reset_status_settings = 11;
+        GetLightingSettingsRequest get_lighting_settings = 12;
+        SetLightingSettingsRequest set_lighting_settings = 13;
+        SaveLightingSettingsRequest save_lighting_settings = 14;
+        DiscardLightingSettingsRequest discard_lighting_settings = 15;
+        ResetLightingSettingsRequest reset_lighting_settings = 16;
+        GetPowerSettingsRequest get_power_settings = 17;
+        SetPowerSettingsRequest set_power_settings = 18;
+        SavePowerSettingsRequest save_power_settings = 19;
+        DiscardPowerSettingsRequest discard_power_settings = 20;
+        ResetPowerSettingsRequest reset_power_settings = 21;
+        GetPowerDiagnosticsRequest get_power_diagnostics = 22;
+        GetLightingEffectsRequest get_lighting_effects = 23;
+    }
+}
+
+message Response {
+    oneof response_type {
+        ErrorResponse error = 1;
+        GetFirmwareInfoResponse firmware_info = 2;
+        BatterySettingsResponse battery_settings = 3;
+        StatusSettingsResponse status_settings = 4;
+        LightingSettingsResponse lighting_settings = 5;
+        PowerSettingsResponse power_settings = 6;
+        PowerDiagnostics power_diagnostics = 7;
+        LightingEffectsResponse lighting_effects = 8;
+    }
+}

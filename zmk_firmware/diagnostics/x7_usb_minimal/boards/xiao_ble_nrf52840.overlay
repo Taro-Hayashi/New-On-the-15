@@ -1,0 +1,5 @@
+/*
+ * The ZMK nrf52840-nosd snippet expects the SoftDevice reservation to have
+ * this label. Zephyr's standard XIAO BLE board names it reserved_partition_0.
+ */
+sd_partition: &reserved_partition_0 { };

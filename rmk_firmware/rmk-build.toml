@@ -1,0 +1,32 @@
+[rmk]
+ble_profiles_num = 5
+# The split central otherwise services its peripheral link every 7.5 ms.
+# 30 ms balances central-side radio current and peripheral key latency.
+split_central_connection_interval_us = 30000
+
+# Reserve subscriber slots for the application status-indicator task in
+# addition to RMK's built-in host, battery-service, and split subscribers.
+[event.action]
+subs = 1
+
+# The split central's System OFF timer also observes peripheral key events.
+[event.keyboard]
+subs = 4
+
+[event.connection_status_change]
+subs = 4
+
+[event.layer_change]
+subs = 4
+
+[event.battery_status]
+subs = 4
+
+[event.sleep_state]
+subs = 2
+
+[event.peripheral_connected]
+subs = 2
+
+[event.central_connected]
+subs = 2

@@ -1,0 +1,44 @@
+/* Confirmed x8 status indicator and SK6812 controls. */
+
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk-matrix-lighting/matrix_lighting.h>
+#include "indicator-test.overlay"
+#include "nimh-battery-test.overlay"
+
+&led_strip {
+    chain-length = <38>;
+};
+
+&vbatt {
+    series-cell-count = <1>;
+};
+
+&rgb_ug {
+    compatible = "zmk,behavior-matrix-lighting";
+    display-name = "Static Underglow";
+    underglow-led-count = <6>;
+    matrix-columns = <8>;
+    matrix-rows = <4>;
+    /*
+     * 38 LEDs in data-chain order: LED1 first. Generated with
+     *   tools/gen_led_positions.py --pcb kicad-private/x8_panelize/x8.kicad_pcb
+     *       --net <x8.net> --anchor SW1 --anchor-centre 175 75
+     * The chain snakes: every backlight row runs opposite to the one above it,
+     * so the reference designators and the chain order disagree from LED14 on.
+     */
+    led-positions = <
+          114  134   114  225   114  316   936  316   936  225   /* LED1 LED2 LED3 LED4 LED5 */
+          936  134   875   56   775   56   675   56   575   56   /* LED6 LED14 LED13 LED12 LED11 */
+          475   56   375   56   275   56   175   56   175  156   /* LED10 LED9 LED8 LED7 LED15 */
+          275  156   375  156   475  156   575  156   675  156   /* LED16 LED17 LED18 LED19 LED20 */
+          775  156   875  156   875  256   775  256   675  256   /* LED21 LED22 LED30 LED29 LED28 */
+          575  256   475  256   375  256   275  256   175  256   /* LED27 LED26 LED25 LED24 LED23 */
+          175  356   275  356   375  356   475  356   575  356   /* LED31 LED32 LED33 LED34 LED35 */
+          675  356   775  356   875  356   /* LED36 LED37 LED38 */
+    >;
+    default-hue = <250>;
+    default-saturation = <100>;
+    default-backlight-brightness = <10>;
+    default-underglow-brightness = <10>;
+    default-backlight-enabled;
+};

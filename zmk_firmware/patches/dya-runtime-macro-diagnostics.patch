@@ -1,0 +1,78 @@
+--- a/src/runtime_macro.c
++++ b/src/runtime_macro.c
+@@ -614,6 +614,24 @@
+     return runtime_macro_start_playback(slot, event);
+ }
+ 
++/* DIAG: dump the shared keyspace pool budget and every live slot's extent, so a
++ * spurious "pool full" can be told apart from a genuinely exhausted budget. */
++static void runtime_macro_diag_pool(const char *where, int ret) {
++    size_t used = zmk_custom_setting_large_pool_used(runtime_macros.large_pool);
++    LOG_ERR("DIAG %s ret=%d pool_used=%u pool_size=%u", where, ret, (uint32_t)used,
++            (uint32_t)runtime_macros.large_pool->size);
++    for (uint32_t i = 0; i < runtime_macros.max_entries; i++) {
++        if (!runtime_macros.slots[i].in_use) {
++            LOG_ERR("DIAG   slot %u free", i);
++            continue;
++        }
++        const struct zmk_custom_setting *slot = &runtime_macros.slots[i].setting;
++        LOG_ERR("DIAG   slot %u key=%s blob=%u", i,
++                zmk_custom_setting_public_key(slot) ? zmk_custom_setting_public_key(slot) : "?",
++                (uint32_t)slot->state->blob.size);
++    }
++}
++
+ int zmk_runtime_macro_create(const char *name, const uint8_t *encoded, size_t encoded_size,
+                              enum zmk_custom_setting_write_mode mode, uint32_t *out_slot) {
+     if (!name || name[0] == '\0') {
+@@ -651,6 +669,9 @@
+ 
+     if (encoded_size > 0) {
+         ret = zmk_custom_setting_write_bytes(created, encoded, encoded_size, mode);
++        LOG_ERR("DIAG create name=%s encoded_size=%u write_ret=%d", name, (uint32_t)encoded_size,
++                ret);
++        runtime_macro_diag_pool("create", ret);
+         if (ret < 0) {
+             /* Don't leave a stray empty macro behind on a failed body write
+              * (e.g. -ENOSPC from a full pool). */
+@@ -703,7 +724,11 @@
+      * (CONFIG_ZMK_RUNTIME_MACRO_POOL_BYTES) is exhausted; propagate it
+      * unchanged so the Studio RPC handler can surface a clear "pool full"
+      * message. */
+-    return zmk_custom_setting_write_bytes(setting, encoded, encoded_size, mode);
++    int write_ret = zmk_custom_setting_write_bytes(setting, encoded, encoded_size, mode);
++    LOG_ERR("DIAG write name=%s encoded_size=%u write_ret=%d", name, (uint32_t)encoded_size,
++            write_ret);
++    runtime_macro_diag_pool("write", write_ret);
++    return write_ret;
+ }
+ 
+ int zmk_runtime_macro_read(const char *name, uint8_t *encoded, size_t encoded_capacity,
+--- a/src/studio/runtime_macro_handler.c
++++ b/src/studio/runtime_macro_handler.c
+@@ -148,12 +148,16 @@
+ 
+ static int append_key_tap_sequence_step(uint8_t *dest, size_t capacity, size_t *offset,
+                                         const cormoran_runtime_macro_KeyTapSequenceStep *sequence) {
++    LOG_ERR("DIAG append_seq keys=%u capacity=%u offset=%u", (uint32_t)sequence->packed_keys.size,
++            (uint32_t)capacity, (uint32_t)*offset);
+     int ret = append_uvar(dest, capacity, offset, sequence->packed_keys.size);
+     if (ret < 0) {
+         return ret;
+     }
+ 
+     if (sequence->packed_keys.size > capacity - *offset) {
++        LOG_ERR("DIAG append_seq ENOSPC keys=%u remaining=%u", (uint32_t)sequence->packed_keys.size,
++                (uint32_t)(capacity - *offset));
+         return -ENOSPC;
+     }
+ 
+@@ -964,6 +968,8 @@
+     }
+ 
+     zmk_custom_settings_notify_suppress_end();
++
++    LOG_ERR("DIAG rpc request_type=%d ret=%d", (int)req.which_request_type, ret);
+ 
+     if (ret < 0 && resp->which_response_type != cormoran_runtime_macro_Response_error_tag) {
+         /* resolve_slot_name() already sets a slot-specific error directly on

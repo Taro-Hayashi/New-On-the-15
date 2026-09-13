@@ -1,0 +1,7 @@
+config ONTHE15_SETTINGS_RESET_TO_BOOTLOADER
+    bool "Enter the UF2 bootloader after erasing ZMK settings"
+    depends on ZMK_SETTINGS_RESET_ON_START
+    default y
+    help
+      Reboot into the UF2 bootloader after ZMK has synchronously erased the
+      settings partition during startup.

@@ -1,0 +1,35 @@
+/* Confirmed x15 status indicator and SK6812 controls. */
+
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk-matrix-lighting/matrix_lighting.h>
+#include "indicator-test.overlay"
+
+&rgb_ug {
+    compatible = "zmk,behavior-matrix-lighting";
+    display-name = "Static Underglow";
+    underglow-led-count = <6>;
+    matrix-columns = <15>;
+    matrix-rows = <4>;
+    /* 66 LEDs in data-chain order: LED1 first. */
+    led-positions = <
+          114  134   114  225   114  316  1636  316  1636  225   /* LED1 LED2 LED3 LED4 LED5 */
+         1636  134  1575   56  1475   56  1375   56  1275   56   /* LED6 LED21 LED20 LED19 LED18 */
+         1175   56  1075   56   975   56   875   56   775   56   /* LED17 LED16 LED15 LED14 LED13 */
+          675   56   575   56   475   56   375   56   275   56   /* LED12 LED11 LED10 LED9 LED8 */
+          175   56   175  156   275  156   375  156   475  156   /* LED7 LED22 LED23 LED24 LED25 */
+          575  156   675  156   775  156   875  156   975  156   /* LED26 LED27 LED28 LED29 LED30 */
+         1075  156  1175  156  1275  156  1375  156  1475  156   /* LED31 LED32 LED33 LED34 LED35 */
+         1575  156  1575  256  1475  256  1375  256  1275  256   /* LED36 LED51 LED50 LED49 LED48 */
+         1175  256  1075  256   975  256   875  256   775  256   /* LED47 LED46 LED45 LED44 LED43 */
+          675  256   575  256   475  256   375  256   275  256   /* LED42 LED41 LED40 LED39 LED38 */
+          175  256   175  356   275  356   375  356   475  356   /* LED37 LED52 LED53 LED54 LED55 */
+          575  356   675  356   775  356   875  356   975  356   /* LED56 LED57 LED58 LED59 LED60 */
+         1075  356  1175  356  1275  356  1375  356  1475  356   /* LED61 LED62 LED63 LED64 LED65 */
+         1575  356   /* LED66 */
+    >;
+    default-hue = <250>;
+    default-saturation = <100>;
+    default-backlight-brightness = <10>;
+    default-underglow-brightness = <10>;
+    default-backlight-enabled;
+};

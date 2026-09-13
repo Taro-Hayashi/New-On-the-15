@@ -1,0 +1,18 @@
+/*
+ * Idle and deep-sleep timeout keys.
+ *
+ * Never bound in a shipped keymap - the timeouts belong in the settings UI,
+ * where the current value is visible. The node is here so that a user who
+ * wants the steps on keys can assign them from Studio. It is added only to the
+ * targets that build the power settings module; see build_dya.sh.
+ */
+
+/ {
+    behaviors {
+        pwr_set: power_settings {
+            compatible = "zmk,behavior-power-settings";
+            #binding-cells = <1>;
+            display-name = "Power Settings";
+        };
+    };
+};

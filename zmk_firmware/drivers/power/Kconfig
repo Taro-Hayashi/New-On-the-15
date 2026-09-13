@@ -1,0 +1,8 @@
+config ONTHE15_POWER_SETTINGS
+    bool "On the 15 runtime power settings"
+    default n
+    depends on ZMK_SLEEP
+    help
+      Store runtime idle and deep-sleep timeouts and apply them through the
+      patched ZMK activity API used by the isolated DYA firmware.
+

@@ -1,0 +1,14 @@
+config GPIO_SN74HC595_CHAIN
+	bool "Daisy-chained SN74HC595 SPI GPIO expander"
+	default y
+	depends on DT_HAS_ONTHE15_SN74HC595_CHAIN_ENABLED
+	depends on SPI
+	help
+	  GPIO driver for up to four daisy-chained 74HC595 shift registers on
+	  one SPI bus. Pin 0 maps to QA of the register closest to the MCU,
+	  matching the RMK Hc595Matrix column order.
+
+config GPIO_SN74HC595_CHAIN_INIT_PRIORITY
+	int "Init priority"
+	default 85
+	depends on GPIO_SN74HC595_CHAIN

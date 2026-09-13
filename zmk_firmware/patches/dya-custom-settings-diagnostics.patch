@@ -1,0 +1,53 @@
+--- a/src/custom_settings.c
++++ b/src/custom_settings.c
+@@ -2096,6 +2096,8 @@
+         k_mutex_lock(&custom_settings_lock, K_FOREVER);
+         int ret = array_size_from_storage(setting, &array_size, read);
+         k_mutex_unlock(&custom_settings_lock);
++        LOG_ERR("DIAG load size record %s/%s size=%u ret=%d", custom_subsystem_id, next,
++                array_size, ret);
+         return ret;
+     }
+ 
+@@ -2194,6 +2196,7 @@
+     k_mutex_lock(&custom_settings_lock, K_FOREVER);
+     int ret = value_from_storage(setting, data, read);
+     k_mutex_unlock(&custom_settings_lock);
++    LOG_ERR("DIAG load record %s/%s len=%u ret=%d", custom_subsystem_id, next, (uint32_t)read, ret);
+     return ret;
+ }
+ 
+--- a/src/custom_settings_array.c
++++ b/src/custom_settings_array.c
+@@ -28,12 +28,15 @@
+ #include <string.h>
+ 
+ #include <zephyr/kernel.h>
++#include <zephyr/logging/log.h>
+ #include <zephyr/settings/settings.h>
+ 
+ #include <cormoran/zmk/custom_settings.h>
+ 
+ #include "custom_settings_internal.h"
+ 
++LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
++
+ /*
+  * Array element "index views": zmk_custom_setting_find_array_element hands
+  * out a struct zmk_custom_setting * for one (array descriptor, index) pair
+@@ -281,6 +284,7 @@
+     struct zmk_custom_setting_array_state *array_state = array_descriptor->array_state;
+     uint32_t array_size = array_state->size;
+     ret = settings_save_one(size_name, &array_size, sizeof(array_size));
++    LOG_ERR("DIAG save_array name=%s size=%u size_save_ret=%d", size_name, array_size, ret);
+     if (ret < 0) {
+         return ret;
+     }
+@@ -302,6 +306,7 @@
+         }
+ 
+         ret = settings_save_one(name, data, len);
++        LOG_ERR("DIAG save_array elem name=%s len=%u ret=%d", name, (uint32_t)len, ret);
+         if (ret < 0) {
+             return ret;
+         }

@@ -1,0 +1,14 @@
+/* Select the x7 physical layout instead of the shield's x8 default.
+ *
+ * The single-board shield defaults to the x8 layout because the scan matrix is
+ * the x8 superset and one image serves both models. A repair image is built
+ * for one board in front of the technician, so it selects the layout that
+ * matches it: on x7 the eighth column of each half is not populated, and the
+ * x8 layout would draw four keys that can never answer.
+ */
+
+/ {
+    chosen {
+        zmk,physical-layout = &on_the_15_x7_layout;
+    };
+};

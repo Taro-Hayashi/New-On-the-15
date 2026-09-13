@@ -1,0 +1,49 @@
+/* Deterministic x7 hardware-test keymap in physical-layout order.
+ *
+ * The shield's own on_the_15.keymap is 34 keys, laid out for the x8 physical
+ * layout it chooses by default. A build that selects on_the_15_x7_layout (see
+ * config/x7-layout.overlay) is 30 keys instead - seven columns per half rather
+ * than eight - and the keymap has to be exactly as long as the chosen layout,
+ * so the x7 repair image builds from this file.
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
+
+/ {
+    behaviors {
+        bt_fb: bluetooth_feedback {
+            compatible = "onthe15,behavior-bt-feedback";
+            #binding-cells = <2>;
+            display-name = "Bluetooth Feedback";
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            display-name = "Test";
+            bindings = <
+&lt 1 A &kp B &kp C &kp D &kp E &kp F &kp G
+&kp H   &kp I &kp J &kp K &kp L &kp M &kp N
+&kp O   &kp P &kp Q &kp R &kp S &kp T &kp U
+&kp V   &kp W &kp X &kp Y &kp Z &kp A &kp B
+&kp C   &kp D
+            >;
+        };
+
+        maintenance_layer: maintenance_layer {
+            display-name = "Maintenance";
+            bindings = <
+&trans       &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &trans
+&trans       &trans       &trans       &trans       &trans       &trans       &trans
+&trans       &trans       &trans       &trans       &trans       &trans       &out OUT_TOG
+&trans       &trans       &trans       &trans       &trans       &trans       &trans
+&bootloader  &bt BT_CLR
+            >;
+        };
+    };
+};

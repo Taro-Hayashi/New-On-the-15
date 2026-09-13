@@ -1,0 +1,11 @@
+description: On the 15 Eneloop AAA battery monitor
+
+compatible: "onthe15,battery-nimh-diagnostic"
+
+include: voltage-divider.yaml
+
+properties:
+  series-cell-count:
+    type: int
+    required: true
+    description: Number of series-connected NiMH cells measured by the divider

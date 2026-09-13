@@ -1,0 +1,18 @@
+config ONTHE15_KEYMAP_FORCE_STOCK
+    bool "Discard any stored keymap at boot and run the compiled one"
+    depends on ZMK_KEYMAP_SETTINGS_STORAGE
+    default n
+    help
+      Hardware-test images want the deterministic compiled keymap (the shield's
+      A-Z-in-physical-order layout), but ZMK_STUDIO_RPC hard-selects
+      ZMK_KEYMAP_SETTINGS_STORAGE, so a board that already carries a saved
+      keymap would boot into that instead. Enable this to call
+      zmk_keymap_reset_settings() shortly after startup, which deletes the
+      stored bindings, layer names and layer ordering and reloads the stock
+      keymap - the same thing ZMK Studio's "restore stock keymap" does.
+
+      Only the keymap is touched: lighting, battery, BLE bonds and every other
+      settings subtree are left alone, unlike a full settings erase.
+
+      Never enable this in a distributed or daily-use image: keymap edits made
+      over Studio will not survive a reboot.

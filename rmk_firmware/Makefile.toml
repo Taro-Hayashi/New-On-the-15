@@ -1,0 +1,535 @@
+[tasks.install-llvm-tools]
+install_crate = { rustup_component_name = "llvm-tools" }
+
+[tasks.flip-link]
+install_crate = { crate_name = "flip-link", binary = "flip-link", test_arg = ["-h"] }
+
+[tasks.objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "on-the-15-v4-rmk",
+    "--",
+    "-O",
+    "ihex",
+    "on-the-15-v4-rmk.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "on-the-15-v4-rmk.hex",
+    "--output-path",
+    "on-the-15-v4-rmk.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["objcopy"]
+
+[tasks.led-check-objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "led-check",
+    "--",
+    "-O",
+    "ihex",
+    "led-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.led-check-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "led-check.hex",
+    "--output-path",
+    "led-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["led-check-objcopy"]
+
+[tasks.power-baseline-check-objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "power-baseline-check",
+    "--",
+    "-O",
+    "ihex",
+    "power-baseline-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.power-baseline-check-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "power-baseline-check.hex",
+    "--output-path",
+    "power-baseline-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["power-baseline-check-objcopy"]
+
+[tasks.power-system-off-check-objcopy]
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "power-system-off-check",
+    "--",
+    "-O",
+    "ihex",
+    "power-system-off-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.power-system-off-check-uf2]
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "power-system-off-check.hex",
+    "--output-path",
+    "power-system-off-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["power-system-off-check-objcopy"]
+
+[tasks.power-system-off-xiao-leds-check-objcopy]
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "power-system-off-xiao-leds-check",
+    "--",
+    "-O",
+    "ihex",
+    "power-system-off-xiao-leds-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.power-system-off-xiao-leds-check-uf2]
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "power-system-off-xiao-leds-check.hex",
+    "--output-path",
+    "power-system-off-xiao-leds-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["power-system-off-xiao-leds-check-objcopy"]
+
+[tasks.power-system-off-qspi-dpd-check-objcopy]
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "power-system-off-qspi-dpd-check",
+    "--",
+    "-O",
+    "ihex",
+    "power-system-off-qspi-dpd-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.power-system-off-qspi-dpd-check-uf2]
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "power-system-off-qspi-dpd-check.hex",
+    "--output-path",
+    "power-system-off-qspi-dpd-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["power-system-off-qspi-dpd-check-objcopy"]
+
+[tasks.power-ldo-idle-check-objcopy]
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "power-ldo-idle-check",
+    "--",
+    "-O",
+    "ihex",
+    "power-ldo-idle-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.power-ldo-idle-check-uf2]
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "power-ldo-idle-check.hex",
+    "--output-path",
+    "power-ldo-idle-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["power-ldo-idle-check-objcopy"]
+
+[tasks.power-clock-stop-check-objcopy]
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "power-clock-stop-check",
+    "--",
+    "-O",
+    "ihex",
+    "power-clock-stop-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.power-clock-stop-check-uf2]
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "power-clock-stop-check.hex",
+    "--output-path",
+    "power-clock-stop-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["power-clock-stop-check-objcopy"]
+
+[tasks.usb-check-objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "usb-check",
+    "--",
+    "-O",
+    "ihex",
+    "usb-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.usb-check-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "usb-check.hex",
+    "--output-path",
+    "usb-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["usb-check-objcopy"]
+
+[tasks.battery-usb-backlight-check-objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "battery-usb-backlight-check",
+    "--",
+    "-O",
+    "ihex",
+    "battery-usb-backlight-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.battery-usb-backlight-check-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "battery-usb-backlight-check.hex",
+    "--output-path",
+    "battery-usb-backlight-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["battery-usb-backlight-check-objcopy"]
+
+[tasks.ble-stage-check-objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "ble-stage-check",
+    "--",
+    "-O",
+    "ihex",
+    "ble-stage-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.ble-stage-check-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "ble-stage-check.hex",
+    "--output-path",
+    "ble-stage-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["ble-stage-check-objcopy"]
+
+[tasks.ble-transport-stage-check-objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "ble-transport-stage-check",
+    "--",
+    "-O",
+    "ihex",
+    "ble-transport-stage-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.ble-transport-stage-check-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "ble-transport-stage-check.hex",
+    "--output-path",
+    "ble-transport-stage-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["ble-transport-stage-check-objcopy"]
+
+[tasks.backlight-vbus-check-objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "backlight-vbus-check",
+    "--",
+    "-O",
+    "ihex",
+    "backlight-vbus-check.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.backlight-vbus-check-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "backlight-vbus-check.hex",
+    "--output-path",
+    "backlight-vbus-check.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["backlight-vbus-check-objcopy"]
+
+[tasks.split-central-left-objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "split-central",
+    "--features",
+    "split,left-central",
+    "--",
+    "-O",
+    "ihex",
+    "split-central-left.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.split-central-left-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "split-central-left.hex",
+    "--output-path",
+    "split-central-left.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["split-central-left-objcopy"]
+
+[tasks.split-peripheral-objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "split-peripheral",
+    "--features",
+    "split",
+    "--",
+    "-O",
+    "ihex",
+    "split-peripheral.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.split-peripheral-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "split-peripheral.hex",
+    "--output-path",
+    "split-peripheral.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["split-peripheral-objcopy"]
+
+[tasks.split-uf2]
+dependencies = [
+    "split-central-left-uf2",
+    "split-peripheral-uf2",
+]
+
+[tasks.x15-objcopy]
+install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
+    "objcopy",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "objcopy",
+    "--release",
+    "--bin",
+    "x15",
+    "--",
+    "-O",
+    "ihex",
+    "x15.hex",
+]
+dependencies = ["install-llvm-tools", "flip-link"]
+
+[tasks.x15-uf2]
+install_crate = { crate_name = "cargo-hex-to-uf2", binary = "cargo", test_arg = [
+    "hex-to-uf2",
+    "--help",
+] }
+command = "cargo"
+args = [
+    "hex-to-uf2",
+    "--input-path",
+    "x15.hex",
+    "--output-path",
+    "x15.uf2",
+    "--family",
+    "nrf52840",
+]
+dependencies = ["x15-objcopy"]

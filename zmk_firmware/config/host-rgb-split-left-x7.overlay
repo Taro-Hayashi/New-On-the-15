@@ -1,0 +1,5 @@
+#include "host-rgb-split-x7-x8-common.overlay"
+
+&rgb_ug {
+    host-local-offset = <0>;
+};

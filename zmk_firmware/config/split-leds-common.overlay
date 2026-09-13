@@ -1,0 +1,16 @@
+/* Shared status indicator and synchronized SK6812 controls for BLE split. */
+
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk-matrix-lighting/matrix_lighting.h>
+#include "indicator-test.overlay"
+
+&rgb_ug {
+    compatible = "zmk,behavior-matrix-lighting";
+    display-name = "Static Underglow";
+    underglow-led-count = <6>;
+    default-hue = <250>;
+    default-saturation = <100>;
+    default-backlight-brightness = <10>;
+    default-underglow-brightness = <10>;
+    default-backlight-enabled;
+};

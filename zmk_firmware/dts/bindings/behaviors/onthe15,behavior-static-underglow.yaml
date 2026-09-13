@@ -1,0 +1,5 @@
+description: On the 15 state-change-only underglow behavior
+
+compatible: "onthe15,behavior-static-underglow"
+
+include: two_param.yaml

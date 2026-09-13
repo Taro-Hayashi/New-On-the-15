@@ -1,0 +1,56 @@
+--- a/src/custom_settings.c
++++ b/src/custom_settings.c
+@@ -584,9 +584,31 @@
+  * mirroring how validate_behavior_id_constraint below resolves a behavior
+  * local id, but additionally checking param1/param2 through
+  * zmk_behavior_validate_binding instead of accepting any uint32_t. */
++/* Set while value_from_storage() applies a persisted record.
++ *
++ * With CONFIG_ZMK_BEHAVIOR_LOCAL_ID_TYPE_SETTINGS_TABLE, ZMK's behavior local
++ * ID table is itself populated during settings_load(): stored IDs are applied
++ * by the "behavior" subtree's set handler, and any behavior still without an
++ * ID is numbered in that subtree's commit handler, i.e. after every set
++ * callback in the pass has run. A "custom_settings" record that loads before
++ * the table is complete therefore cannot resolve its behavior local ID yet,
++ * and rejecting it here silently dropped the persisted value: the setting fell
++ * back to its default (behavior_id 0) and the binding was lost on every boot,
++ * even though the record was written and read back correctly.
++ *
++ * A persisted behavior value was already validated when it was written, so the
++ * load path only range-checks it and leaves resolution to the reader, which
++ * has to handle an unresolvable ID anyway (behaviors can disappear across a
++ * firmware update). Runtime writes are unaffected and still validate fully. */
++static bool applying_persisted_value;
++
+ static int validate_behavior_value(const struct zmk_custom_setting_behavior_value *behavior) {
+     if (behavior->behavior_id >= UINT16_MAX) {
+         return -ERANGE;
++    }
++
++    if (applying_persisted_value) {
++        return 0;
+     }
+ 
+ #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS)
+@@ -712,6 +734,11 @@
+         return -ERANGE;
+     }
+ 
++    /* Same load-ordering exemption as validate_behavior_value(). */
++    if (applying_persisted_value) {
++        return 0;
++    }
++
+ #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS)
+     return zmk_behavior_find_behavior_name_from_local_id((zmk_behavior_local_id_t)behavior_id)
+                ? 0
+@@ -1975,7 +2002,9 @@
+         return -EINVAL;
+     }
+ 
++    applying_persisted_value = true;
+     int ret = zmk_custom_setting_validate(setting, &value);
++    applying_persisted_value = false;
+     if (ret < 0) {
+         return ret;
+     }

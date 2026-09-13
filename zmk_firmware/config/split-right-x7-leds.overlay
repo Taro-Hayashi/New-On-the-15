@@ -1,0 +1,45 @@
+/* x7 right/peripheral: 6 underglow LEDs followed by 28 backlight LEDs. */
+
+#include "split-leds-common.overlay"
+#include "nimh-battery-test.overlay"
+
+/*
+ * The x7 board carries 34 SK6812, not the 38 of the shield default: one
+ * backlight column fewer, four LEDs fewer. The lighting module asserts that
+ * led-positions covers exactly chain-length LEDs, so the strip has to be
+ * shortened here rather than left at the x8 superset value.
+ */
+&led_strip {
+    chain-length = <34>;
+};
+
+&vbatt {
+    series-cell-count = <1>;
+};
+
+&rgb_ug {
+    matrix-columns = <7>;
+    matrix-rows = <4>;
+    /*
+     * config/split-left-x7-leds.overlay with 1150 added to every x. The right
+     * half of every Studio layout in config/studio/on_the_15_split.overlay
+     * starts at that offset - wide enough to clear an x8 left half - and the
+     * offset is fixed, so this table is the same whichever model the other
+     * half is. Equivalent to generating it with
+     *   tools/gen_led_positions.py --pcb kicad-private/x7_panelize/x7.kicad_pcb
+     *       --net <x7.net> --anchor SW1 --anchor-centre 1325 75
+     *
+     * The lighting module takes the nearest LED within half a key unit of the
+     * key centre, so the left half's keys - 1150 or more away - correctly own
+     * no LED on this board.
+     */
+    led-positions = <
+         1264  134  1264  225  1264  316  1986  316  1986  225   /* LED1 LED2 LED3 LED4 LED5 */
+         1986  134  1925   56  1825   56  1725   56  1625   56   /* LED6 LED13 LED12 LED11 LED10 */
+         1525   56  1425   56  1325   56  1325  156  1425  156   /* LED9 LED8 LED7 LED14 LED15 */
+         1525  156  1625  156  1725  156  1825  156  1925  156   /* LED16 LED17 LED18 LED19 LED20 */
+         1925  256  1825  256  1725  256  1625  256  1525  256   /* LED27 LED26 LED25 LED24 LED23 */
+         1425  256  1325  256  1325  356  1425  356  1525  356   /* LED22 LED21 LED28 LED29 LED30 */
+         1625  356  1725  356  1825  356  1925  356   /* LED31 LED32 LED33 LED34 */
+    >;
+};

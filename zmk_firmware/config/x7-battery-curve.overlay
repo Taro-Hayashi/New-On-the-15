@@ -1,0 +1,22 @@
+/* x7 single-cell NiMH voltage reporting with both indicator LEDs held on. */
+
+#include <dt-bindings/gpio/gpio.h>
+#include "nimh-battery-test.overlay"
+
+&gpio0 {
+    indicator_green_load: indicator_green_load {
+        gpio-hog;
+        gpios = <28 GPIO_ACTIVE_HIGH>;
+        output-high;
+    };
+
+    indicator_red_load: indicator_red_load {
+        gpio-hog;
+        gpios = <29 GPIO_ACTIVE_HIGH>;
+        output-high;
+    };
+};
+
+&vbatt {
+    series-cell-count = <1>;
+};

@@ -1,0 +1,7 @@
+include:
+  - artifact: onthe15_studio_x15
+    board: xiao_ble//zmk
+    shield: on_the_15_x15
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_ONTHE15_STUDIO_RPC=y
+    snippet: studio-rpc-usb-uart
+

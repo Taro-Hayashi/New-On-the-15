@@ -1,0 +1,3 @@
+description: On the 15 battery warning and chemistry settings
+compatible: "onthe15,behavior-battery-settings"
+include: one_param.yaml

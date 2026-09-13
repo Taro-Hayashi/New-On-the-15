@@ -1,0 +1,9 @@
+config ONTHE15_LIGHTING_STARTUP
+    bool "On the 15 power-up lighting intro"
+    default n
+    depends on ZMK_MATRIX_LIGHTING
+    help
+      Play the six-LED underglow ripple when the LED domain comes up, then
+      hand over to the saved effect. The pattern assumes the On the 15 edge
+      underglow: three LEDs on the left and three on the right, in symmetric
+      pairs.

@@ -1,0 +1,6 @@
+name: zmk-feature-power-settings
+build:
+  settings:
+    dts_root: .
+  cmake: .
+  kconfig: Kconfig

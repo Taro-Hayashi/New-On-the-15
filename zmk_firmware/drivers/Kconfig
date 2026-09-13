@@ -1,0 +1,6 @@
+rsource "gpio/Kconfig"
+rsource "status/Kconfig"
+rsource "battery/Kconfig"
+rsource "power/Kconfig"
+rsource "lighting/Kconfig"
+rsource "keymap_force_stock/Kconfig"

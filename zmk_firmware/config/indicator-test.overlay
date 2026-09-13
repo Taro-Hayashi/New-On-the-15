@@ -1,0 +1,36 @@
+/* Two active-high status LEDs controlled by status/status_indicator.c. */
+
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+    behaviors {
+        ind_tog: ind_tog {
+            compatible = "onthe15,behavior-indicator-toggle";
+            #binding-cells = <0>;
+            display-name = "Connected Indicator Toggle";
+        };
+
+        /*
+         * Never bound in a shipped keymap. It is here so the four indicator
+         * switches can be put on keys from Studio by anyone who wants them.
+         */
+        ind_set: indicator_settings {
+            compatible = "onthe15,behavior-status-settings";
+            #binding-cells = <1>;
+            display-name = "Indicator Settings";
+        };
+    };
+
+    status_leds: status_leds {
+        compatible = "gpio-leds";
+        status = "disabled";
+
+        indicator_green: indicator_green {
+            gpios = <&gpio0 28 GPIO_ACTIVE_HIGH>;
+        };
+
+        indicator_red: indicator_red {
+            gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+        };
+    };
+};

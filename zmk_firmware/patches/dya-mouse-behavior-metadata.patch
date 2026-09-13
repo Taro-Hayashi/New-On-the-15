@@ -1,0 +1,136 @@
+diff --git a/app/dts/behaviors/mouse_move.dtsi b/app/dts/behaviors/mouse_move.dtsi
+index 09b93520..b28cf28f 100644
+--- a/app/dts/behaviors/mouse_move.dtsi
++++ b/app/dts/behaviors/mouse_move.dtsi
+@@ -11,6 +11,7 @@
+         /omit-if-no-ref/ mmv: mouse_move {
+             compatible = "zmk,behavior-input-two-axis";
+             #binding-cells = <1>;
++            display-name = "Mouse Move";
+             x-input-code = <INPUT_REL_X>;
+             y-input-code = <INPUT_REL_Y>;
+             time-to-max-speed-ms = <300>;
+diff --git a/app/dts/behaviors/mouse_scroll.dtsi b/app/dts/behaviors/mouse_scroll.dtsi
+index b482efde..e6f5e74f 100644
+--- a/app/dts/behaviors/mouse_scroll.dtsi
++++ b/app/dts/behaviors/mouse_scroll.dtsi
+@@ -12,6 +12,7 @@
+         /omit-if-no-ref/ msc: mouse_scroll {
+             compatible = "zmk,behavior-input-two-axis";
+             #binding-cells = <1>;
++            display-name = "Mouse Scroll";
+             x-input-code = <INPUT_REL_HWHEEL>;
+             y-input-code = <INPUT_REL_WHEEL>;
+             time-to-max-speed-ms = <300>;
+diff --git a/app/src/behaviors/behavior_input_two_axis.c b/app/src/behaviors/behavior_input_two_axis.c
+index 40e82a8e..da73e5c5 100644
+--- a/app/src/behaviors/behavior_input_two_axis.c
++++ b/app/src/behaviors/behavior_input_two_axis.c
+@@ -283,8 +283,106 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
+     return 0;
+ }
+ 
++#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
++
++/*
++ * The parameter is a packed pair of signed 16-bit speeds, which is not a thing
++ * a keymap editor can offer as a number. Naming the four directions each
++ * instance actually uses is what makes the behavior assignable from Studio at
++ * all: without any metadata the firmware accepts only a zero parameter and
++ * refuses every real binding.
++ *
++ * Which four they are depends on the instance, and the same driver serves both
++ * the pointer and the wheel, so the set is chosen from the configured input
++ * codes rather than fixed at compile time.
++ */
++#define TWO_AXIS_VALUE(name, val)                                                                  \
++    {.display_name = name, .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE, .value = (uint32_t)(val)}
++
++static const struct behavior_parameter_value_metadata move_values[] = {
++    TWO_AXIS_VALUE("Up", MOVE_UP),
++    TWO_AXIS_VALUE("Down", MOVE_DOWN),
++    TWO_AXIS_VALUE("Left", MOVE_LEFT),
++    TWO_AXIS_VALUE("Right", MOVE_RIGHT),
++};
++
++static const struct behavior_parameter_value_metadata scroll_values[] = {
++    TWO_AXIS_VALUE("Up", SCRL_UP),
++    TWO_AXIS_VALUE("Down", SCRL_DOWN),
++    TWO_AXIS_VALUE("Left", SCRL_LEFT),
++    TWO_AXIS_VALUE("Right", SCRL_RIGHT),
++};
++
++/*
++ * The named directions are the useful half of the story; the parameter is
++ * still an arbitrary packed pair of speeds, and a client with a richer editor
++ * of its own - DYA Studio offers presets and a pair of axis fields - sends
++ * whatever the user asked for. Naming only four values would reject every
++ * other speed, so a second set accepts the whole parameter space.
++ *
++ * The bounds are compared against an unsigned parameter, which promotes them
++ * to unsigned as well: a signed-looking INT32_MIN..INT32_MAX would match
++ * nothing at all. 0 through -1 is the pair that spans every 32-bit value,
++ * which is what a packed pair with a negative axis - top bit set - needs.
++ */
++static const struct behavior_parameter_value_metadata any_value[] = {
++    {
++        .display_name = "Speed",
++        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_RANGE,
++        .range = {.min = 0, .max = -1},
++    },
++};
++
++static const struct behavior_parameter_metadata_set move_metadata_set[] = {
++    {
++        .param1_values = move_values,
++        .param1_values_len = ARRAY_SIZE(move_values),
++    },
++    {
++        .param1_values = any_value,
++        .param1_values_len = ARRAY_SIZE(any_value),
++    },
++};
++
++static const struct behavior_parameter_metadata_set scroll_metadata_set[] = {
++    {
++        .param1_values = scroll_values,
++        .param1_values_len = ARRAY_SIZE(scroll_values),
++    },
++    {
++        .param1_values = any_value,
++        .param1_values_len = ARRAY_SIZE(any_value),
++    },
++};
++
++static const struct behavior_parameter_metadata move_metadata = {
++    .sets_len = ARRAY_SIZE(move_metadata_set),
++    .sets = move_metadata_set,
++};
++
++static const struct behavior_parameter_metadata scroll_metadata = {
++    .sets_len = ARRAY_SIZE(scroll_metadata_set),
++    .sets = scroll_metadata_set,
++};
++
++static int get_parameter_metadata(const struct device *behavior,
++                                  struct behavior_parameter_metadata *param_metadata) {
++    const struct behavior_input_two_axis_config *cfg = behavior->config;
++    const bool is_wheel = cfg->y_code == INPUT_REL_WHEEL || cfg->x_code == INPUT_REL_HWHEEL;
++
++    *param_metadata = is_wheel ? scroll_metadata : move_metadata;
++    return 0;
++}
++
++#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
++
+ static const struct behavior_driver_api behavior_input_two_axis_driver_api = {
+-    .binding_pressed = on_keymap_binding_pressed, .binding_released = on_keymap_binding_released};
++    .binding_pressed = on_keymap_binding_pressed,
++    .binding_released = on_keymap_binding_released,
++#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
++    .get_parameter_metadata = get_parameter_metadata,
++#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
++};
+ 
+ #define ITA_INST(n)                                                                                \
+     static struct behavior_input_two_axis_data behavior_input_two_axis_data_##n = {};              \

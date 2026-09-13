@@ -1,0 +1,5 @@
+/* Hardware-test default: illuminate both SK6812 groups at low brightness. */
+
+&rgb_ug {
+    default-underglow-enabled;
+};

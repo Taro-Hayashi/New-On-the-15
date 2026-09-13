@@ -1,0 +1,46 @@
+if SHIELD_ON_THE_15_SPLIT_LEFT
+
+# The half this shield describes, without the model: which of x7 and x8 a board
+# is, is a build-time choice this shield knows nothing about, so build_dya.sh
+# names each image for its own model. This default only applies to a build made
+# without it. The names stay within the 16 characters ZMK allows, which is what
+# fits in the advertising packet alongside flags, appearance and the service
+# UUIDs.
+config ZMK_KEYBOARD_NAME
+    default "On the 15 L"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif
+
+if SHIELD_ON_THE_15_SPLIT_RIGHT
+
+config ZMK_KEYBOARD_NAME
+    default "On the 15 R"
+
+endif
+
+if SHIELD_ON_THE_15_SPLIT_LEFT || SHIELD_ON_THE_15_SPLIT_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+config SPI
+    default y
+
+if ZMK_RGB_UNDERGLOW
+
+config ZMK_RGB_UNDERGLOW_EXT_POWER
+    default n
+
+endif # ZMK_RGB_UNDERGLOW
+
+if ZMK_MATRIX_LIGHTING
+
+config ZMK_MATRIX_LIGHTING_SETTINGS_PATH
+    default "onthe15/underglow_v8"
+
+endif # ZMK_MATRIX_LIGHTING
+
+endif

@@ -1,0 +1,3 @@
+/* Reuse the Studio physical layout for the personal split keymap. */
+
+#include "../studio/on_the_15_split.overlay"

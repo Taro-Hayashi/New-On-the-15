@@ -1,0 +1,12 @@
+#include <behaviors/runtime_macro.dtsi>
+
+/* Phase 8 test-only binding: hold LT1/Esc, then press N4 to play macro slot 0. */
+&maintenance_layer {
+    bindings = <
+&trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &rmacro 0 &trans &trans &trans &trans &trans &trans &trans &trans &trans
+&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
+&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &out OUT_TOG
+&ind_tog &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &studio_unlock
+&bootloader &bt BT_CLR
+    >;
+};

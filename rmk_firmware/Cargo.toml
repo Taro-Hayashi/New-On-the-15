@@ -1,0 +1,181 @@
+[package]
+name = "on-the-15-v4-rmk"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+rmk = { git = "https://github.com/Taro-Hayashi/rmk.git", rev = "7e64b8595f755bfe624b54430a46a65b3c270cbb", features = ["async_matrix", "nrf52840_ble", "adafruit_bl"] }
+nrf-sdc = { git = "https://github.com/alexmoon/nrf-sdc", rev = "abe49d22ebfc85fae134eb082fbfddf752016a55", features = [
+    "defmt",
+    "peripheral",
+    "central",
+    "nrf52840",
+] }
+nrf-mpsl = { git = "https://github.com/alexmoon/nrf-sdc", rev = "abe49d22ebfc85fae134eb082fbfddf752016a55", features = [
+    "defmt",
+    "critical-section-impl",
+    "nrf52840",
+] }
+bt-hci = { version = "0.9", features = ["defmt"] }
+
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.5"
+embassy-time = { version = "0.5", features = ["tick-hz-32_768", "defmt"] }
+embassy-nrf = { version = "0.11", features = [
+    "defmt",
+    "nrf52840",
+    "time-driver-rtc1",
+    "gpiote",
+    "unstable-pac",
+    "nfc-pins-as-gpio",
+    "time",
+] }
+embassy-executor = { version = "0.10", features = [
+    "defmt",
+    "platform-cortex-m",
+    "executor-thread",
+] }
+embassy-sync = "0.8"
+embedded-hal = "1.0"
+embedded-hal-async = "1.0"
+embedded-storage = "0.3"
+defmt = "1.0"
+defmt-rtt = "1.0"
+panic-probe = { version = "1.0", features = ["print-defmt"] }
+static_cell = "2"
+
+[features]
+default = ["keymap-distribution"]
+keymap-distribution = []
+keymap-personal = []
+test-x15 = []
+battery-settings-test = []
+settings-reset = []
+split = ["rmk/split"]
+# The supported split uses the left half as central.
+central = []
+left-central = ["central"]
+
+[build-dependencies]
+xz2 = "0.1.7"
+json = "0.12"
+const-gen = "1.6"
+
+[[bin]]
+name = "on-the-15-v4-rmk"
+test = false
+bench = false
+
+[[bin]]
+name = "x15"
+path = "src/bin/x15.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "split-central"
+path = "src/bin/split_central.rs"
+required-features = ["split", "central"]
+test = false
+bench = false
+
+[[bin]]
+name = "split-peripheral"
+path = "src/bin/split_peripheral.rs"
+required-features = ["split"]
+test = false
+bench = false
+
+[[bin]]
+name = "led-check"
+path = "src/bin/led_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "settings-reset"
+path = "src/bin/settings_reset.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "power-baseline-check"
+path = "src/bin/power_baseline_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "power-system-off-check"
+path = "src/bin/power_system_off_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "power-system-off-xiao-leds-check"
+path = "src/bin/power_system_off_xiao_leds_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "power-system-off-qspi-dpd-check"
+path = "src/bin/power_system_off_qspi_dpd_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "power-ldo-idle-check"
+path = "src/bin/power_ldo_idle_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "power-clock-stop-check"
+path = "src/bin/power_clock_stop_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "usb-check"
+path = "src/bin/usb_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "battery-usb-backlight-check"
+path = "src/bin/battery_usb_backlight_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "ble-stage-check"
+path = "src/bin/ble_stage_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "ble-transport-stage-check"
+path = "src/bin/ble_transport_stage_check.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "backlight-vbus-check"
+path = "src/bin/backlight_vbus_check.rs"
+test = false
+bench = false
+
+[profile.dev]
+codegen-units = 1
+debug = true
+opt-level = 1
+overflow-checks = true
+lto = false
+panic = "unwind"
+
+[profile.release]
+codegen-units = 1
+debug = true
+opt-level = "z"
+overflow-checks = false
+lto = "fat"

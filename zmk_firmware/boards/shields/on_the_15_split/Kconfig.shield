@@ -1,0 +1,5 @@
+config SHIELD_ON_THE_15_SPLIT_LEFT
+    def_bool $(shields_list_contains,on_the_15_split_left)
+
+config SHIELD_ON_THE_15_SPLIT_RIGHT
+    def_bool $(shields_list_contains,on_the_15_split_right)

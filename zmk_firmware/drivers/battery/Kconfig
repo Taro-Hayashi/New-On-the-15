@@ -1,0 +1,26 @@
+config ONTHE15_BATTERY_NIMH_DIAGNOSTIC
+    bool "On the 15 NiMH battery monitor"
+    default n
+    select ADC
+    select SENSOR
+    help
+      Read one or more series-connected Eneloop AAA cells through vbat_sense
+      and estimate state of charge from the Panasonic BK-4MCC discharge curve.
+
+config ONTHE15_BATTERY_SETTINGS_SPLIT_SYNC
+    bool "Send battery settings from the split central to its peripherals"
+    default y
+    depends on ONTHE15_BATTERY_SETTINGS && ZMK_SPLIT
+    select ZMK_SPLIT_RELAY_EVENT
+    help
+      Each half reads its own cell and warns about its own charge, so the
+      chemistry curve and the warning switch have to hold on both. The battery
+      behavior is global, so a key toggle reaches both, but a change made from
+      Studio reaches only the central. This relays it, the same way the
+      indicator and the lighting relay theirs.
+
+config ONTHE15_BATTERY_SETTINGS
+    bool "On the 15 battery warning and chemistry settings"
+    default n
+    depends on ONTHE15_BATTERY_NIMH_DIAGNOSTIC
+    select SETTINGS

@@ -1,0 +1,5 @@
+description: Bluetooth profile operation with x15 status LED feedback
+
+compatible: "onthe15,behavior-bt-feedback"
+
+include: two_param.yaml

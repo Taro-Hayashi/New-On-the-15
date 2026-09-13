@@ -1,0 +1,5 @@
+description: On the 15 status indication switches
+
+compatible: "onthe15,behavior-status-settings"
+
+include: one_param.yaml

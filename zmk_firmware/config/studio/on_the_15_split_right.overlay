@@ -1,0 +1,17 @@
+/* Apply the right-hand column offset to every Studio physical layout. */
+
+&on_the_15_split_x7_x8_transform {
+    col-offset = <16>;
+};
+
+&on_the_15_split_x8_x7_transform {
+    col-offset = <16>;
+};
+
+&on_the_15_split_x7_x7_transform {
+    col-offset = <16>;
+};
+
+&on_the_15_split_x8_x8_transform {
+    col-offset = <16>;
+};

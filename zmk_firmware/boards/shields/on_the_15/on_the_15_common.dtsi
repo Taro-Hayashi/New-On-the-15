@@ -1,0 +1,120 @@
+/*
+ * Shared hardware definition for all On the 15 v4 boards (x7/x8/x15) on the
+ * Seeed XIAO BLE. Pin assignment follows rmk_firmware/README.md:
+ *
+ *   P0.04 (D6)  74HC595 SER   (SPI MOSI)
+ *   P0.05 (D7)  74HC595 SRCLK (SPI SCK)
+ *   P1.11 (D8)  74HC595 RCLK  (SPI CS, latch on release)
+ *   P1.12 (D9)  row2 (side switches)
+ *   P1.13 (D10) row1
+ *   P1.14 (D11) row0
+ *   P1.15 (D12) SK6812 data
+ *
+ * Defaults are the x7/x8 chain (2 x 74HC595 = 16 columns, 38 SK6812).
+ * The x15 shield overrides ngpios, chain-length and col-gpios.
+ */
+
+#include <dt-bindings/led/led.h>
+
+&pinctrl {
+    spi2_595_default: spi2_595_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,
+                    <NRF_PSEL(SPIM_MOSI, 0, 4)>;
+        };
+    };
+
+    spi2_595_sleep: spi2_595_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,
+                    <NRF_PSEL(SPIM_MOSI, 0, 4)>;
+            low-power-enable;
+        };
+    };
+
+    spi3_led_default: spi3_led_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 1, 15)>;
+        };
+    };
+
+    spi3_led_sleep: spi3_led_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 1, 15)>;
+            low-power-enable;
+        };
+    };
+};
+
+&spi2 {
+    status = "okay";
+    pinctrl-0 = <&spi2_595_default>;
+    pinctrl-1 = <&spi2_595_sleep>;
+    pinctrl-names = "default", "sleep";
+    cs-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
+
+    shift_reg: sn74hc595-chain@0 {
+        compatible = "onthe15,sn74hc595-chain";
+        reg = <0>;
+        spi-max-frequency = <4000000>;
+        ngpios = <16>;
+        gpio-controller;
+        #gpio-cells = <2>;
+    };
+};
+
+&spi3 {
+    status = "okay";
+    pinctrl-0 = <&spi3_led_default>;
+    pinctrl-1 = <&spi3_led_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    led_strip: ws2812@0 {
+        compatible = "worldsemi,ws2812-spi";
+        reg = <0>;
+        spi-max-frequency = <4000000>;
+        chain-length = <38>;
+        spi-one-frame = <0x70>;
+        spi-zero-frame = <0x40>;
+        color-mapping = <LED_COLOR_ID_GREEN
+                         LED_COLOR_ID_RED
+                         LED_COLOR_ID_BLUE>;
+    };
+};
+
+/ {
+    chosen {
+        zmk,underglow = &led_strip;
+    };
+
+    kscan0: kscan_0 {
+        compatible = "zmk,kscan-gpio-matrix";
+        diode-direction = "col2row";
+        wakeup-source;
+
+        row-gpios
+            = <&gpio1 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio1 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio1 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+
+        col-gpios
+            = <&shift_reg 0 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 1 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 2 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 3 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 4 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 5 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 6 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 7 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 8 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 9 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 10 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 11 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 12 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 13 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 14 GPIO_ACTIVE_HIGH>
+            , <&shift_reg 15 GPIO_ACTIVE_HIGH>
+            ;
+    };
+};

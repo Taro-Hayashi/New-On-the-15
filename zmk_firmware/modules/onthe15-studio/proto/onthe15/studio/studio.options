@@ -1,0 +1,3 @@
+onthe15.studio.GetFirmwareInfoResponse.version max_size:32
+onthe15.studio.GetFirmwareInfoResponse.git_sha max_size:41
+onthe15.studio.ErrorResponse.message max_size:48

@@ -1,0 +1,23 @@
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    runtime_combo_defaults {
+        compatible = "cormoran,runtime-combo-defaults";
+
+        combo_test_short {
+            slot = <0>;
+            key-positions = <1 2>;
+            bindings = <&kp ESC>;
+            layers = <0>;
+            display-name = "Test Short";
+        };
+
+        combo_test_long {
+            slot = <1>;
+            key-positions = <1 2 3>;
+            bindings = <&kp TAB>;
+            layers = <0>;
+            display-name = "Test Long";
+        };
+    };
+};

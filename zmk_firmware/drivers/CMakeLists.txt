@@ -1,0 +1,6 @@
+add_subdirectory(gpio)
+add_subdirectory(status)
+add_subdirectory(battery)
+add_subdirectory(power)
+add_subdirectory(lighting)
+add_subdirectory_ifdef(CONFIG_ONTHE15_KEYMAP_FORCE_STOCK keymap_force_stock)

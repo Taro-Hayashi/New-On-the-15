@@ -1,0 +1,12 @@
+/* x7/x8 left/central superset: 6 underglow LEDs followed by up to 32 backlight LEDs. */
+
+#include "split-leds-common.overlay"
+#include "nimh-battery-test.overlay"
+
+&led_strip {
+    chain-length = <38>;
+};
+
+&vbatt {
+    series-cell-count = <1>;
+};

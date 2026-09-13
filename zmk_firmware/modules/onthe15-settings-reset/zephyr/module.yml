@@ -1,0 +1,4 @@
+name: onthe15-settings-reset
+build:
+  cmake: .
+  kconfig: Kconfig

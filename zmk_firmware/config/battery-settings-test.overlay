@@ -1,0 +1,13 @@
+/* Dedicated x15 battery-settings test keymap overlay.
+ * Normal Studio and personal keymaps intentionally do not bind &bat_set.
+ */
+
+&maintenance_layer {
+    bindings = <
+&trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &bat_set 0 &bat_set 1 &trans &trans &trans &trans &trans &trans &trans
+&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
+&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &out OUT_TOG
+&ind_tog &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &studio_unlock
+&bootloader &bt BT_CLR
+    >;
+};

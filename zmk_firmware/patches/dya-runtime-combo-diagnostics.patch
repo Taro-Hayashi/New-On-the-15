@@ -1,0 +1,104 @@
+--- a/src/runtime_combo/runtime_combo.c
++++ b/src/runtime_combo/runtime_combo.c
+@@ -12,6 +12,7 @@
+ #include <zephyr/init.h>
+ #include <zephyr/kernel.h>
+ #include <zephyr/logging/log.h>
++#include <zephyr/settings/settings.h>
+ #include <zephyr/sys/byteorder.h>
+ #include <zephyr/sys/util.h>
+ 
+@@ -692,6 +693,12 @@
+      * attempting the flash save), so the cache must refresh regardless of
+      * any call's outcome. */
+     runtime_combo_cache_rebuild_slot(index);
++    LOG_ERR("DIAG write idx=%u persist=%d req_size=%u combo_ret=%d behavior_ret=%d name_ret=%d "
++            "sizes combos=%u behaviors=%u names=%u",
++            index, (int)persist, array_size, write_ret, behavior_ret, name_ret,
++            zmk_custom_setting_array_size(combo_setting(index)),
++            zmk_custom_setting_array_size(behavior_setting(index)),
++            zmk_custom_setting_array_size(name_setting(index)));
+     if (write_ret < 0) {
+         return write_ret;
+     }
+@@ -1415,9 +1422,42 @@
+ ZMK_LISTENER(runtime_combo, runtime_combo_listener);
+ ZMK_SUBSCRIPTION(runtime_combo, zmk_position_state_changed);
+ ZMK_SUBSCRIPTION(runtime_combo, zmk_keycode_state_changed);
++
++/* DIAG: settings_load() runs before USB logging is up, so boot-time load
++ * failures are invisible on the console. Re-read the persisted behavior
++ * element well after boot, then force a targeted subtree reload and read it
++ * again. If the value only appears after the reload, the boot-time load
++ * dropped it (behavior local IDs are assigned during the same settings_load
++ * pass when CONFIG_ZMK_BEHAVIOR_LOCAL_ID_TYPE_SETTINGS_TABLE is used). */
++static void runtime_combo_diag_work_handler(struct k_work *work) {
++    ARG_UNUSED(work);
++    struct zmk_custom_setting_value value;
++
++    int ret = zmk_custom_setting_read_array_by_key(ZMK_RUNTIME_COMBO_SUBSYSTEM_ID,
++                                                   ZMK_RUNTIME_COMBO_BEHAVIORS_KEY, 0, &value);
++    LOG_ERR("DIAG boot behaviors[0] read_ret=%d id=%u", ret,
++            ret == 0 ? value.behavior_value.behavior_id : 0);
++    LOG_ERR("DIAG boot combos array_size=%u", zmk_runtime_combo_count());
+ 
++    int load_ret = settings_load_subtree("custom_settings/cormoran__runtime_combo");
++    LOG_ERR("DIAG reload subtree ret=%d", load_ret);
++
++    ret = zmk_custom_setting_read_array_by_key(ZMK_RUNTIME_COMBO_SUBSYSTEM_ID,
++                                               ZMK_RUNTIME_COMBO_BEHAVIORS_KEY, 0, &value);
++    LOG_ERR("DIAG after-reload behaviors[0] read_ret=%d id=%u", ret,
++            ret == 0 ? value.behavior_value.behavior_id : 0);
++
++    struct zmk_runtime_combo_config combo;
++    int combo_ret = zmk_runtime_combo_read(0, &combo);
++    LOG_ERR("DIAG after-reload combo[0] read_ret=%d", combo_ret);
++    zmk_runtime_combo_invalidate_cache();
++}
++
++static K_WORK_DELAYABLE_DEFINE(runtime_combo_diag_work, runtime_combo_diag_work_handler);
++
+ static int runtime_combo_init(void) {
+     k_work_init_delayable(&timeout_task, combo_timeout_handler);
++    k_work_schedule(&runtime_combo_diag_work, K_SECONDS(12));
+     return 0;
+ }
+ 
+--- a/src/studio/runtime_combo_handler.c
++++ b/src/studio/runtime_combo_handler.c
+@@ -123,8 +123,11 @@
+         cormoran_runtime_combo_ListCombosResponse_init_zero;
+     uint32_t count = MIN(zmk_runtime_combo_count(), zmk_runtime_combo_max_count());
+ 
++    LOG_ERR("DIAG list_combos count=%u max=%u", zmk_runtime_combo_count(),
++            zmk_runtime_combo_max_count());
+     for (uint32_t i = 0; i < count; i++) {
+         int ret = fill_combo_message(i, &result.combos[result.combos_count]);
++        LOG_ERR("DIAG list_combos slot=%u fill_ret=%d", i, ret);
+         if (ret < 0) {
+             /* One unreadable slot must not take the whole listing down with
+              * it. Besides -ENOENT (a slot that was never written), a slot can
+@@ -140,6 +143,7 @@
+         }
+         result.combos_count++;
+     }
++    LOG_ERR("DIAG list_combos emitted=%u", result.combos_count);
+ 
+     resp->which_response_type = cormoran_runtime_combo_Response_list_combos_tag;
+     resp->response_type.list_combos = result;
+@@ -332,6 +336,7 @@
+      * zmk_runtime_combo_write()/reset(), so the cache would otherwise never
+      * learn about it. */
+     zmk_runtime_combo_invalidate_cache();
++    LOG_ERR("DIAG save ret=%d affected=%u", ret, affected_count);
+     if (ret < 0) {
+         return ret;
+     }
+@@ -411,6 +416,7 @@
+         break;
+     }
+ 
++    LOG_ERR("DIAG rpc request_type=%d ret=%d", (int)req.which_request_type, ret);
+     if (ret < 0) {
+         set_errno_error(resp, "Runtime combo request", ret);
+     }

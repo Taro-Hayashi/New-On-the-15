@@ -1,0 +1,15 @@
+description: Runtime idle and deep-sleep timeout keys
+
+compatible: "zmk,behavior-power-settings"
+
+include: one_param.yaml
+
+properties:
+  idle-step-ms:
+    type: int
+    default: 30000
+    description: How far one idle timeout key moves the timeout
+  deep-sleep-step-ms:
+    type: int
+    default: 300000
+    description: How far one deep-sleep timeout key moves the timeout

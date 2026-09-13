@@ -1,0 +1,3 @@
+/* Compatibility entry point for the confirmed x15 LED test build. */
+
+#include "x15-leds.overlay"

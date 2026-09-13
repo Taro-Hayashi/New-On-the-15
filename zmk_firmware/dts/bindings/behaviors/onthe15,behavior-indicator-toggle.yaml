@@ -1,0 +1,5 @@
+description: On the 15 connected indicator toggle behavior
+
+compatible: "onthe15,behavior-indicator-toggle"
+
+include: zero_param.yaml

@@ -1,0 +1,32 @@
+/* x8 left/central: 6 underglow LEDs followed by 32 backlight LEDs. */
+
+#include "split-leds-common.overlay"
+#include "nimh-battery-test.overlay"
+
+&led_strip {
+    chain-length = <38>;
+};
+
+&vbatt {
+    series-cell-count = <1>;
+};
+
+&rgb_ug {
+    matrix-columns = <8>;
+    matrix-rows = <4>;
+    /*
+     * The same 38 positions as the standalone config/x8-leds.overlay: the left
+     * half of a split sits at the origin of the Studio layouts, exactly where
+     * the one-piece board does, so its LED table is unchanged.
+     */
+    led-positions = <
+          114  134   114  225   114  316   936  316   936  225   /* LED1 LED2 LED3 LED4 LED5 */
+          936  134   875   56   775   56   675   56   575   56   /* LED6 LED14 LED13 LED12 LED11 */
+          475   56   375   56   275   56   175   56   175  156   /* LED10 LED9 LED8 LED7 LED15 */
+          275  156   375  156   475  156   575  156   675  156   /* LED16 LED17 LED18 LED19 LED20 */
+          775  156   875  156   875  256   775  256   675  256   /* LED21 LED22 LED30 LED29 LED28 */
+          575  256   475  256   375  256   275  256   175  256   /* LED27 LED26 LED25 LED24 LED23 */
+          175  356   275  356   375  356   475  356   575  356   /* LED31 LED32 LED33 LED34 LED35 */
+          675  356   775  356   875  356   /* LED36 LED37 LED38 */
+    >;
+};

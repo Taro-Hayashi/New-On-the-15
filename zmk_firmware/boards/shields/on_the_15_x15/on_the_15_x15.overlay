@@ -1,0 +1,61 @@
+/*
+ * On the 15 v4 x15 one-piece board: 3 x 32 scan matrix over four
+ * daisy-chained 74HC595s, 66 SK6812. col7/col15 carry no switches (the
+ * x15 is the x7 + x8 layouts side by side, which skip those columns);
+ * scanning them is harmless.
+ */
+
+#include "../on_the_15/on_the_15_common.dtsi"
+#include "on_the_15_x15-layouts.dtsi"
+
+&shift_reg {
+    ngpios = <32>;
+};
+
+&led_strip {
+    chain-length = <66>;
+};
+
+&kscan0 {
+    col-gpios
+        = <&shift_reg 0 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 1 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 2 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 3 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 4 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 5 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 6 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 7 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 8 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 9 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 10 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 11 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 12 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 13 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 14 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 15 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 16 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 17 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 18 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 19 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 20 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 21 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 22 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 23 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 24 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 25 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 26 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 27 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 28 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 29 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 30 GPIO_ACTIVE_HIGH>
+        , <&shift_reg 31 GPIO_ACTIVE_HIGH>
+        ;
+};
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &on_the_15_x15_layout;
+    };
+};

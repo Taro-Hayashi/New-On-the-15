@@ -1,0 +1,42 @@
+config ONTHE15_STATUS_INDICATOR
+    bool "On the 15 two-LED status indicator"
+    default n
+    help
+      Drive the P0.28 green and P0.29 red indicators from ZMK connection,
+      battery, activity, and layer state.
+
+config ONTHE15_STATUS_INDICATOR_SPLIT_SYNC
+    bool "Send indicator settings from the split central to its peripherals"
+    default y
+    depends on ONTHE15_STATUS_INDICATOR && ZMK_SPLIT
+    select ZMK_SPLIT_RELAY_EVENT
+    help
+      The ind_tog behavior is global, so toggling the connected indicator from
+      a key reaches both halves on its own. A change made from Studio reaches
+      only the central, which leaves the two indicators disagreeing. This
+      relays the settings the same way the lighting module relays its own.
+
+config ONTHE15_STATUS_INDICATOR_TEST_ALWAYS_ON
+    bool "Hold both On the 15 status LEDs on for hardware tests"
+    default n
+    depends on ONTHE15_STATUS_INDICATOR
+    help
+      Ignore status patterns and continuously drive both indicator LEDs high.
+
+config ONTHE15_LIGHTING
+    bool "On the 15 lighting"
+    default n
+    select ZMK_MATRIX_LIGHTING
+    select ONTHE15_LIGHTING_STARTUP
+    help
+      Turn on this keyboard's lighting: the reusable matrix lighting module
+      plus the power-up intro. Enable ZMK_MATRIX_LIGHTING on its own for the
+      module without the intro.
+
+config ONTHE15_BT_FEEDBACK_BEHAVIOR
+    bool "On the 15 Bluetooth feedback behavior"
+    default y
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Wrap Bluetooth profile selection and clearing so x15 status LEDs can
+      provide deterministic feedback without relying on ambiguous BLE events.

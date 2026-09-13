@@ -1,0 +1,5 @@
+name: onthe15-studio
+build:
+  cmake: .
+  kconfig: Kconfig
+

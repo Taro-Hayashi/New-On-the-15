@@ -1,0 +1,18 @@
+/*
+ * The Runtime Macro binding.
+ *
+ * Studio can create and edit macros without this, but nothing could play one:
+ * the behavior node lives in the module's own dtsi, and no shipped keymap
+ * included it, so `Runtime Macro` never reached the keymap editor. Macros were
+ * creatable and unpressable.
+ *
+ * No slot is bound in a default keymap. The binding takes the slot number the
+ * macro was assigned when it was created, which is only known after the fact,
+ * so assigning it is the user's move to make from Studio. The module declares
+ * the slot range as parameter metadata, so the editor offers 0 through
+ * CONFIG_ZMK_RUNTIME_MACRO_COUNT - 1 rather than a bare number.
+ *
+ * Added only to the targets that build the macro module; see build_dya.sh.
+ */
+
+#include <behaviors/runtime_macro.dtsi>

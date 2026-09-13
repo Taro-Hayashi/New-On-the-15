@@ -1,0 +1,23 @@
+if SHIELD_ON_THE_15
+
+config ZMK_KEYBOARD_NAME
+    default "On the 15 x7/x8"
+
+config SPI
+    default y
+
+if ZMK_RGB_UNDERGLOW
+
+config ZMK_RGB_UNDERGLOW_EXT_POWER
+    default n
+
+endif # ZMK_RGB_UNDERGLOW
+
+if ZMK_MATRIX_LIGHTING
+
+config ZMK_MATRIX_LIGHTING_SETTINGS_PATH
+    default "onthe15/underglow_v8"
+
+endif # ZMK_MATRIX_LIGHTING
+
+endif

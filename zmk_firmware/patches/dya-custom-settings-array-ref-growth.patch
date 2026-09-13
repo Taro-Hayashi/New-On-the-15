@@ -1,0 +1,92 @@
+diff --git a/src/studio/custom_settings_handler.c b/src/studio/custom_settings_handler.c
+index 4bcc2d5..fe0af3f 100644
+--- a/src/studio/custom_settings_handler.c
++++ b/src/studio/custom_settings_handler.c
+@@ -1671,10 +1671,17 @@ static int handle_private_write_setting(const struct zmk_custom_settings_setting
+      * enabled - are provably dead code when the feature is off (value_is_array
+      * is a runtime flag decoded off the wire, so it alone cannot make that
+      * provable to the compiler). */
+-    bool write_as_array = IS_ENABLED(CONFIG_ZMK_CUSTOM_SETTINGS_ARRAY) && value_is_array;
++    bool write_as_array = IS_ENABLED(CONFIG_ZMK_CUSTOM_SETTINGS_ARRAY) &&
++                          (value_is_array || ref->has_array_index);
++    uint32_t resolved_array_size = array_size;
++    if (write_as_array && !value_is_array) {
++        resolved_array_size = MAX(zmk_custom_setting_array_size(setting),
++                                  setting->array_index + 1);
++    }
+     if (write_as_array) {
+-        if (array_size == 0 || array_size > zmk_custom_setting_array_max_size(setting) ||
+-            setting->array_index >= array_size) {
++        if (resolved_array_size == 0 ||
++            resolved_array_size > zmk_custom_setting_array_max_size(setting) ||
++            setting->array_index >= resolved_array_size) {
+             return -EINVAL;
+         }
+     }
+@@ -1699,7 +1706,8 @@ static int handle_private_write_setting(const struct zmk_custom_settings_setting
+         value = &internal_value;
+     }
+ 
+-    ret = write_as_array ? zmk_custom_setting_write_array_element(setting, value, array_size, mode)
++    ret = write_as_array
++              ? zmk_custom_setting_write_array_element(setting, value, resolved_array_size, mode)
+                          : zmk_custom_setting_write(setting, value, mode);
+     if (ret < 0) {
+         return ret;
+@@ -3423,6 +3431,56 @@ static int custom_settings_list_array_test_init(void) {
+ 
+ SYS_INIT(custom_settings_list_array_test_init, APPLICATION, 99);
+ 
++/* DYA Studio encodes an array element as an indexed SettingRef plus a scalar
++ * value. Verify that this wire form grows the active array, matching the
++ * explicit SettingArrayValue form. */
++static int custom_settings_indexed_ref_array_growth_test_init(void) {
++    const struct zmk_custom_setting *array =
++        zmk_custom_setting_find_array("test", "array_value");
++    if (!array) {
++        return -ENOENT;
++    }
++
++    int ret = zmk_custom_setting_reset(array);
++    if (ret < 0) {
++        return ret;
++    }
++    uint32_t old_size = zmk_custom_setting_array_size(array);
++    if (old_size >= zmk_custom_setting_array_max_size(array)) {
++        return -ERANGE;
++    }
++
++    struct zmk_custom_settings_setting_ref ref = {
++        .has_custom_subsystem_id = true,
++        .has_key = true,
++        .has_source = true,
++        .source = ZMK_CUSTOM_SETTING_SOURCE_LOCAL,
++        .has_array_index = true,
++        .array_index = old_size,
++    };
++    copy_string(ref.custom_subsystem_id, sizeof(ref.custom_subsystem_id), "test");
++    copy_string(ref.key, sizeof(ref.key), "array_value");
++
++    struct zmk_custom_setting_value value = ZMK_CUSTOM_SETTING_VALUE_INT32(77);
++    cormoran_zmk_custom_settings_Response resp = cormoran_zmk_custom_settings_Response_init_zero;
++    ret = handle_private_write_setting(
++        &ref, &value, false, 0, 0,
++        cormoran_zmk_custom_settings_SettingWriteMode_SETTING_WRITE_MODE_MEMORY, &resp, false);
++    if (ret < 0 || zmk_custom_setting_array_size(array) != old_size + 1) {
++        LOG_ERR("Indexed-ref array write did not grow size from %u", old_size);
++        return ret < 0 ? ret : -EINVAL;
++    }
++
++    ret = zmk_custom_setting_reset(array);
++    if (ret < 0) {
++        return ret;
++    }
++    LOG_INF("PASS: custom_settings_indexed_ref_array_growth %u->%u", old_size, old_size + 1);
++    return 0;
++}
++
++SYS_INIT(custom_settings_indexed_ref_array_growth_test_init, APPLICATION, 99);
++
+ /* ListSettings/GetSetting must surface keyspace entries by their USER key
+  * with their PAYLOAD value, even though a slot is stored internally as an
+  * anonymous [key\0][payload] BYTES blob under an ordinal storage name.

@@ -1,0 +1,51 @@
+config ZMK_POWER_SETTINGS
+    bool "Reusable runtime power settings"
+    default n
+    depends on ZMK_SLEEP
+    depends on SETTINGS
+    help
+      Provides validated runtime idle and deep-sleep timeout settings through
+      the ZMK activity API. The settings subtree is configurable so existing
+      firmware can retain its persistent storage format.
+
+if ZMK_POWER_SETTINGS
+
+config ZMK_POWER_SETTINGS_SETTINGS_PATH
+    string "Zephyr settings subtree"
+    default "zmk/power_settings_v1"
+    help
+      Persistent settings subtree without the trailing /state component.
+      Keep this value stable after shipping firmware.
+
+config ZMK_POWER_SETTINGS_SYNC_API
+    bool "Enable split-ready synchronization contract"
+    default n
+    help
+      Adds source-tagged snapshots, generations, change notifications, and
+      deterministic reconnect conflict resolution. This does not enable or
+      implement a split transport.
+
+config ZMK_POWER_SETTINGS_SPLIT_SYNC
+    bool "Carry the synchronization contract over the split transport"
+    default y
+    depends on ZMK_SPLIT
+    select ZMK_POWER_SETTINGS_SYNC_API
+    select ZMK_SPLIT_RELAY_EVENT
+    help
+      Sends the central's snapshot to its peripherals when the settings
+      change, and lets a peripheral ask for one when it connects. Both halves
+      sleep on their own timers, so without this a peripheral keeps the
+      timeouts its firmware was built with. Conflict resolution is the one the
+      sync API already defines.
+
+config ZMK_POWER_SETTINGS_STUDIO_RPC
+    bool "DYA Studio zmk__settings compatibility RPC"
+    default n
+    depends on ZMK_STUDIO
+    select ZMK_POWER_SETTINGS_SYNC_API
+    help
+      Exposes the DYA Studio zmk__settings activity-settings contract as a
+      thin write-through adapter over this module. No split transport is
+      enabled by this option.
+
+endif

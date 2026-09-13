@@ -1,0 +1,10 @@
+zephyr_library()
+zephyr_library_include_directories(
+    ${APPLICATION_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_LIST_DIR}/../../include
+)
+zephyr_library_sources_ifdef(CONFIG_ONTHE15_BATTERY_NIMH_DIAGNOSTIC
+    battery_nimh_diagnostic.c
+    battery_curve.c
+    battery_settings.c
+)

@@ -1,0 +1,15 @@
+/*
+ * On the 15 v4 x7/x8 single-board shield (3 x 16 scan matrix).
+ * Like the RMK single binary, this is the x8 superset: on x7 the extra
+ * column scans open and the trailing LEDs are simply absent.
+ */
+
+#include "on_the_15_common.dtsi"
+#include "on_the_15-layouts.dtsi"
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &on_the_15_x8_layout;
+    };
+};

@@ -1,0 +1,26 @@
+# Daisy-chained 74HC595 shift registers as a GPIO port.
+#
+# Pin 0 = QA of the register closest to the MCU (the byte shifted out last),
+# matching the RMK Hc595Matrix column order. RCLK (latch) is driven as the
+# SPI chip-select: data is latched on the CS rising edge after each transfer,
+# so wire RCLK to the cs-gpios pin with GPIO_ACTIVE_LOW.
+
+description: Daisy-chained SN74HC595 SPI GPIO expander
+
+compatible: "onthe15,sn74hc595-chain"
+
+include: [gpio-controller.yaml, spi-device.yaml]
+
+properties:
+  ngpios:
+    type: int
+    required: true
+    enum: [8, 16, 24, 32]
+    description: Total number of outputs (8 per chained register)
+
+  "#gpio-cells":
+    const: 2
+
+gpio-cells:
+  - pin
+  - flags

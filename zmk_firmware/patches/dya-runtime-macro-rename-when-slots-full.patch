@@ -1,0 +1,35 @@
+--- a/src/runtime_macro.c
++++ b/src/runtime_macro.c
+@@ -754,6 +754,32 @@
+     }
+ 
+     ret = zmk_runtime_macro_create(new_name, encoded, encoded_size, mode, NULL);
++    if (ret == -ENOSPC) {
++        /* Create-then-delete is the safe order, but it transiently needs one
++         * slot (and one pool region) more than the keyboard actually uses, so
++         * it cannot rename anything once every slot is taken - even though a
++         * rename never adds a macro. Fall back to freeing the old entry first.
++         * The body is already held in `encoded`, so a failed retry can restore
++         * it; the only real exposure is losing power between the two calls,
++         * which is why this is a fallback rather than the primary path. */
++        int delete_ret = zmk_custom_setting_keyspace_delete(&runtime_macros, old_key);
++        if (delete_ret < 0) {
++            return ret;
++        }
++
++        ret = zmk_runtime_macro_create(new_name, encoded, encoded_size, mode, NULL);
++        if (ret < 0) {
++            int restore_ret =
++                zmk_runtime_macro_create(old_name, encoded, encoded_size, mode, NULL);
++            if (restore_ret < 0) {
++                LOG_ERR("Rename of \"%s\" failed (%d) and restoring it failed too (%d)", old_name,
++                        ret, restore_ret);
++            }
++            return ret;
++        }
++
++        return 0;
++    }
+     if (ret < 0) {
+         return ret;
+     }

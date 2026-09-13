@@ -1,0 +1,14 @@
+config ZMK_ONTHE15_STUDIO_RPC
+    bool "Enable On the 15 custom Studio RPC"
+    depends on ZMK_STUDIO
+    help
+      Enables the onthe15__studio custom RPC subsystem. Reads are public and
+      settings mutations require Studio Unlock.
+
+if ZMK_ONTHE15_STUDIO_RPC
+
+config ZMK_STUDIO_RPC_TX_BUF_SIZE
+    range 160 4096
+    default 160
+
+endif
