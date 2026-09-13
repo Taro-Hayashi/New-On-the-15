@@ -384,6 +384,7 @@ USBケーブルを接続し、本体を乗せると電源が供給されるこ�
 | --- | ------------------------------- | -------------------------------- |
 | x7  | [`onthe15-split-left-x7-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-left-x7-zmk.uf2) | [`onthe15-split-right-x7-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-right-x7-zmk.uf2) |
 | x8  | [`onthe15-split-left-x8-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-left-x8-zmk.uf2) | [`onthe15-split-right-x8-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-right-x8-zmk.uf2) |
+
 今回は左手のx7、右手にx8を使用するため、[`onthe15-split-left-x7-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-left-x7-zmk.uf2)をx7に、[`onthe15-split-right-x8-zmk.uf2`](https://github.com/Taro-Hayashi/New-On-the-15/releases/latest/download/onthe15-split-right-x8-zmk.uf2)をx8にインストールします。
 
 ### 5.2 ファームウェアのインストール
