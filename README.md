@@ -47,10 +47,10 @@
 | RMKファームウェア       | MIT       | [rmk_firmware/LICENSE](rmk_firmware/LICENSE) |
 
 
-2Uスタビライザーはkoktohさんのフットプリントを使用しました。
-https://github.com/koktoh/BrownSugar_KBD_KiCad_Library
-電池の回路はcormoranさんのdya-dashの回路図を参照しました。
-https://github.com/cormoran/dya-dash-keyboard/
+2Uスタビライザーはkoktohさんのフットプリントを使用しました。  
+https://github.com/koktoh/BrownSugar_KBD_KiCad_Library  
+電池の回路はcormoranさんのdya-dashの回路図を参照しました。  
+https://github.com/cormoran/dya-dash-keyboard/  
 
 ## 保守品の入手先
 - [M2ネジ](https://www.monotaro.com/g/00010425/)（見た目が違うことがあります）
