@@ -467,7 +467,7 @@ settings-reset-zmk.uf2を書き込むことでXIAOをリセット可能です。
 - [基板外形、アクリルプレート](../plate/PLATE.md)
 - [ガーバー（USB基板、フレキシブル基板）](../gerber/GERBER.md)
 - ソースコード
-	- ZMKファームウェア
+	- [ZMKファームウェア](https://github.com/Taro-Hayashi/New-On-the-15/tree/main/zmk_firmware)
 		- 使用モジュール
 			- zmk-matrix-lighting（準備中）
 			- zmk-host-rgb-sync（準備中）
@@ -479,7 +479,7 @@ settings-reset-zmk.uf2を書き込むことでXIAOをリセット可能です。
 			- [zmk-feature-runtime-combo](https://github.com/cormoran/zmk-feature-runtime-combo)
 			- [zmk-feature-runtime-macro](https://github.com/cormoran/zmk-feature-runtime-macro)
 			- [zmk-feature-kscan-diagnostics](https://github.com/cormoran/zmk-feature-kscan-diagnostics)
-	- RMKファームウェア
+	- [RMKファームウェア](https://github.com/Taro-Hayashi/New-On-the-15/tree/main/rmk_firmware)
 ### 7.2 保守品の入手先
 - [M2ネジ](https://www.monotaro.com/g/00010425/)（見た目が違うことがあります）
 	- 5mm

@@ -68,3 +68,6 @@ https://github.com/cormoran/dya-dash-keyboard/
 - [マグネット 6×2mm](https://link.amazon/B0a5OvMwi)
 - [ピンヘッダー 2.54mm x 40ピン](https://akizukidenshi.com/catalog/g/g100167/)
 - [MXスイッチソケット](https://shop.yushakobo.jp/products/a01ps)
+
+
+![](./doc/img/IMG_7956.jpg)
