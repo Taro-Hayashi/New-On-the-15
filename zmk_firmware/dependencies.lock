@@ -1,0 +1,14 @@
+# name|repository|revision|patches applied after checkout
+zmk-stable|https://github.com/zmkfirmware/zmk.git|faaf39d9f59cd2a27eca3739cdd9eb197654299b|
+zmk-dya|https://github.com/cormoran/zmk.git|1fc72aaff7a42bd533c1f4c9b3f23c5317c745f4|patches/dya-runtime-power-settings.patch,patches/dya-mouse-behavior-metadata.patch
+zmk-matrix-lighting|https://github.com/Taro-Hayashi/zmk-matrix-lighting.git|7d2882629d07e1477b739c3a1c8bdde4fa21cf91|
+zmk-host-rgb-sync-x15|https://github.com/Taro-Hayashi/zmk-host-rgb-sync.git|e2e6a4749f73b9ee95a35c6199a93b5347286f3a|
+zmk-host-rgb-sync-split|https://github.com/Taro-Hayashi/zmk-host-rgb-sync.git|34b324468ee386de4635e2cb7d1562c316dfe225|
+zmk-module-ble-management|https://github.com/cormoran/zmk-module-ble-management.git|57738cc4fc6ba80e82a7ac57741a0339cb186cd4|
+zmk-feature-default-layer|https://github.com/cormoran/zmk-feature-default-layer.git|ef1f5b61b14e4f78172d3b6590afb3a39412fafe|
+zmk-feature-custom-settings|https://github.com/cormoran/zmk-feature-custom-settings.git|c6a7fef3a3be3d3ace5de9a4b0628c6418cd1f3f|patches/dya-custom-settings-array-ref-growth.patch,patches/dya-custom-settings-behavior-load-order.patch
+zmk-feature-os-detection|https://github.com/cormoran/zmk-feature-os-detection.git|3052679f645b8fc1997275c2eaa6b86bdd55ca01|
+zmk-feature-device-info|https://github.com/cormoran/zmk-feature-device-info.git|8cedd2dd9f04e19ea5a17b94914dd47a09d8db11|
+zmk-feature-runtime-combo|https://github.com/cormoran/zmk-feature-runtime-combo.git|d9490e7b5d41c516221d131241009e81740efcee|patches/dya-runtime-combo-list-skip-unreadable-slot.patch
+zmk-feature-runtime-macro|https://github.com/cormoran/zmk-feature-runtime-macro.git|38530962eb7061b60efcb98e84585cfb1f0cb6de|patches/dya-runtime-macro-rename-when-slots-full.patch
+zmk-feature-kscan-diagnostics|https://github.com/cormoran/zmk-feature-kscan-diagnostics.git|1432f7fe0cfe903cd7d3c9931ae6bd6f2e1f328e|

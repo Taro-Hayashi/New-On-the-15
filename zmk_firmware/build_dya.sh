@@ -2,23 +2,29 @@
 # Build the isolated x15 DYA Studio compatibility image.
 set -eu
 
-DYA_ZMK="${DYA_ZMK:-/Volumes/Primary/GitHub/zmk-dya}"
 MODULE="$(cd "$(dirname "$0")" && pwd)"
+DEPS_ROOT="${ZMK_DEPS_ROOT:-$MODULE/.build/deps}"
+DYA_ZMK="${DYA_ZMK:-$DEPS_ROOT/zmk-dya}"
+STABLE_ZMK="${STABLE_ZMK:-$DEPS_ROOT/zmk-stable}"
 DYA_BUILD_ROOT="${DYA_BUILD_ROOT:-$DYA_ZMK/build}"
 UF2_OUTPUT_ROOT="${UF2_OUTPUT_ROOT:-$MODULE}"
 STUDIO_MODULE="$MODULE/modules/onthe15-studio"
 SETTINGS_RESET_MODULE="$MODULE/modules/onthe15-settings-reset"
-LIGHTING_MODULE="${LIGHTING_MODULE:-/Volumes/Primary/GitHub/zmk-matrix-lighting}"
-HOST_RGB_MODULE="${HOST_RGB_MODULE:-/Volumes/Primary/GitHub/zmk-host-rgb-sync}"
+LIGHTING_MODULE="${LIGHTING_MODULE:-$DEPS_ROOT/zmk-matrix-lighting}"
+case "${1:-power-x15}" in
+    host-rgb-split-*) DEFAULT_HOST_RGB_MODULE="$DEPS_ROOT/zmk-host-rgb-sync-split" ;;
+    *) DEFAULT_HOST_RGB_MODULE="$DEPS_ROOT/zmk-host-rgb-sync-x15" ;;
+esac
+HOST_RGB_MODULE="${HOST_RGB_MODULE:-$DEFAULT_HOST_RGB_MODULE}"
 POWER_SETTINGS_MODULE="$MODULE/modules/zmk-feature-power-settings"
-BLE_MANAGEMENT_MODULE="${BLE_MANAGEMENT_MODULE:-/Volumes/Primary/GitHub/zmk-module-ble-management}"
-DEFAULT_LAYER_MODULE="${DEFAULT_LAYER_MODULE:-/Volumes/Primary/GitHub/zmk-feature-default-layer}"
-CUSTOM_SETTINGS_MODULE="${CUSTOM_SETTINGS_MODULE:-/Volumes/Primary/GitHub/zmk-feature-custom-settings}"
-OS_DETECTION_MODULE="${OS_DETECTION_MODULE:-/Volumes/Primary/GitHub/zmk-feature-os-detection}"
-DEVICE_INFO_MODULE="${DEVICE_INFO_MODULE:-/Volumes/Primary/GitHub/zmk-feature-device-info}"
-RUNTIME_COMBO_MODULE="${RUNTIME_COMBO_MODULE:-/Volumes/Primary/GitHub/zmk-feature-runtime-combo}"
-RUNTIME_MACRO_MODULE="${RUNTIME_MACRO_MODULE:-/Volumes/Primary/GitHub/zmk-feature-runtime-macro}"
-KSCAN_DIAG_MODULE="${KSCAN_DIAG_MODULE:-/Volumes/Primary/GitHub/zmk-feature-kscan-diagnostics}"
+BLE_MANAGEMENT_MODULE="${BLE_MANAGEMENT_MODULE:-$DEPS_ROOT/zmk-module-ble-management}"
+DEFAULT_LAYER_MODULE="${DEFAULT_LAYER_MODULE:-$DEPS_ROOT/zmk-feature-default-layer}"
+CUSTOM_SETTINGS_MODULE="${CUSTOM_SETTINGS_MODULE:-$DEPS_ROOT/zmk-feature-custom-settings}"
+OS_DETECTION_MODULE="${OS_DETECTION_MODULE:-$DEPS_ROOT/zmk-feature-os-detection}"
+DEVICE_INFO_MODULE="${DEVICE_INFO_MODULE:-$DEPS_ROOT/zmk-feature-device-info}"
+RUNTIME_COMBO_MODULE="${RUNTIME_COMBO_MODULE:-$DEPS_ROOT/zmk-feature-runtime-combo}"
+RUNTIME_MACRO_MODULE="${RUNTIME_MACRO_MODULE:-$DEPS_ROOT/zmk-feature-runtime-macro}"
+KSCAN_DIAG_MODULE="${KSCAN_DIAG_MODULE:-$DEPS_ROOT/zmk-feature-kscan-diagnostics}"
 EXPECTED_DYA_ZMK="1fc72aaff7a42bd533c1f4c9b3f23c5317c745f4"
 EXPECTED_BLE_MANAGEMENT="57738cc4fc6ba80e82a7ac57741a0339cb186cd4"
 EXPECTED_DEFAULT_LAYER="ef1f5b61b14e4f78172d3b6590afb3a39412fafe"
@@ -46,9 +52,9 @@ RUNTIME_MACRO_DIAG=""
 if [ -x "$DYA_ZMK/.venv/bin/west" ]; then
     WEST="$DYA_ZMK/.venv/bin/west"
     TOOL_PATH="$DYA_ZMK/.venv/bin"
-elif [ -x /Volumes/Primary/GitHub/zmk/.venv/bin/west ]; then
-    WEST=/Volumes/Primary/GitHub/zmk/.venv/bin/west
-    TOOL_PATH=/Volumes/Primary/GitHub/zmk/.venv/bin
+elif [ -x "$STABLE_ZMK/.venv/bin/west" ]; then
+    WEST="$STABLE_ZMK/.venv/bin/west"
+    TOOL_PATH="$STABLE_ZMK/.venv/bin"
 else
     echo "west was not found in the DYA or stable ZMK workspace" >&2
     exit 1
