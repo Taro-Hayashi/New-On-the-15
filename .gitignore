@@ -1,1 +1,9 @@
 /zmk_firmware/.build/
+
+# Build outputs and local environments
+/zmk_firmware/.venv-host-rgb/
+/zmk_firmware/*.uf2
+/rmk_firmware/rmk_firmware.zip
+
+# KiCad local state
+*.kicad_prl
